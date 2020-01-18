@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import axios from "axios";
-import Tail from "./components/Tail";
+import Header from "./components/Header";
+import Tails from "./components/Tails";
 import Player from "./Player";
 
 const GlobalStyle = createGlobalStyle`
@@ -9,34 +10,48 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     font-family: consolas;
-    background-color: ${({ theme }) => theme.colors.background};
+    background-color: ${({ theme }) => theme.colors.primary};
+    transition: color, 0.3s, background-color 0.3s;
 
     *,*::before,*::after{
       box-sizing: border-box;
     }
   }
 `;
-const theme = {
+const darkTheme = {
   colors: {
-    background: "#181a1b",
-    lightDark: "#393939",
-    white: "#dcdde1",
-    whitest: "white"
-  }
+    primary: "#181a1b",
+    secondary: "#393939",
+    regularText: "#dcdde1",
+    highlightText: "#ffffff"
+  },
+  imgBrightness: 0.7
+};
+const lightTheme = {
+  colors: {
+    primary: "#ffffff",
+    secondary: "#dcdde1",
+    regularText: "#393939",
+    highlightText: "#181a1b"
+  },
+  imgBrightness: 1
 };
 
-const Wrapper = styled.div`
-  min-height: 100vh;
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  grid-gap: 15px;
-  padding: 25px;
-`;
+const filters = {
+  station: "station",
+  artist: "artist",
+  songName: "songName"
+};
 function App() {
+  const [colorTheme, setColorTheme] = useState("dark");
   const [tails, setTails] = useState([]);
   const [currentRadioUrl, setCurrentRadioUrl] = useState("");
+  const [[filterType, filterValue], setFilter] = useState([
+    filters.station,
+    ""
+  ]);
   window.tails = tails;
+
   useEffect(() => {
     const getData = async () => {
       const { data } = await axios.get("http://localhost:3000");
@@ -44,32 +59,18 @@ function App() {
     };
     getData();
   }, []);
-  console.log(tails);
+
+  const toggleTheme = () =>
+    setColorTheme(prev => (prev === "dark" ? "light" : "dark"));
+
   return (
-    <ThemeProvider theme={theme}>
-      <Wrapper>
+    <ThemeProvider theme={colorTheme === "dark" ? darkTheme : lightTheme}>
+      <>
         <GlobalStyle />
-        {tails.map(
-          ({ id, stationName, cover, songName, artist, streamURL }) => {
-            const defaultCover =
-              "https://banner2.cleanpng.com/20180501/yxq/kisspng-t-shirt-twitch-emote-youtube-pepe-the-frog-on-saturday-5ae91f46dde8a4.441902551525227334909.jpg";
-            return (
-              <Tail
-                key={`radio${id}`}
-                onClick={() => {
-                  setCurrentRadioUrl(streamURL);
-                }}
-                stationName={stationName}
-                cover={cover}
-                songName={songName}
-                artist={artist}
-                defaultCover={defaultCover}
-              ></Tail>
-            );
-          }
-        )}
+        <Header toggleTheme={toggleTheme} colorTheme={colorTheme} />
+        <Tails tails={tails} />
         <Player url={currentRadioUrl} />
-      </Wrapper>
+      </>
     </ThemeProvider>
   );
 }
