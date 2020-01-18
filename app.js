@@ -60,7 +60,7 @@ const main = async () => {
         const obj = {
           artist: decode(radio[1].name),
           songName: decode(radio[1].utwor),
-          cover: decode(radio[1].coverBigUrl)
+          cover: radio[1].coverBigUrl
         };
         tails[id] = { ...tails[id], ...obj };
       });
