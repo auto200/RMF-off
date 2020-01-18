@@ -37,17 +37,18 @@ const lightTheme = {
   imgBrightness: 1
 };
 
-const filters = {
-  station: "station",
-  artist: "artist",
-  songName: "songName"
+const filterTypes = {
+  stationName: "Nazwa stacji",
+  artist: "Wykonawca",
+  songName: "Nazwa piosenki"
 };
 function App() {
   const [colorTheme, setColorTheme] = useState("dark");
   const [tails, setTails] = useState([]);
+  const [filtredTails, setFiltredTails] = useState([]);
   const [currentRadioUrl, setCurrentRadioUrl] = useState("");
-  const [[filterType, filterValue], setFilter] = useState([
-    filters.station,
+  const [[currentFilterType, filterValue], setFilter] = useState([
+    "stationName",
     ""
   ]);
   window.tails = tails;
@@ -56,9 +57,19 @@ function App() {
     const getData = async () => {
       const { data } = await axios.get("http://localhost:3000");
       setTails(data);
+      setFiltredTails(data);
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    const filterVal = filterValue.toLowerCase();
+    setFiltredTails(() =>
+      tails.filter(tail =>
+        tail[currentFilterType].toLowerCase().includes(filterVal)
+      )
+    );
+  }, [filterValue]);
 
   const toggleTheme = () =>
     setColorTheme(prev => (prev === "dark" ? "light" : "dark"));
@@ -67,8 +78,15 @@ function App() {
     <ThemeProvider theme={colorTheme === "dark" ? darkTheme : lightTheme}>
       <>
         <GlobalStyle />
-        <Header toggleTheme={toggleTheme} colorTheme={colorTheme} />
-        <Tails tails={tails} />
+        <Header
+          toggleTheme={toggleTheme}
+          colorTheme={colorTheme}
+          currentFilterType={currentFilterType}
+          filterValue={filterValue}
+          setFilter={setFilter}
+          filterTypes={filterTypes}
+        />
+        <Tails tails={filtredTails} />
         <Player url={currentRadioUrl} />
       </>
     </ThemeProvider>

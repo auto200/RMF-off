@@ -21,14 +21,45 @@ const ToggleTheme = styled.div`
   align-items: center;
   justify-content: center;
   padding: 5px;
+  cursor: pointer;
 `;
+const Filters = styled.div``;
 
-const Header = ({ toggleTheme, colorTheme }) => {
+const Header = ({
+  toggleTheme,
+  colorTheme,
+  currentFilterType,
+  filterValue,
+  setFilter,
+  filterTypes
+}) => {
+  const handleFilterTypeChange = e => {
+    const val = e.target.value;
+    setFilter([val, filterValue]);
+  };
+  const handleFilterInputChange = e => {
+    const val = e.target.value;
+    setFilter([currentFilterType, val]);
+  };
   return (
     <Wrapper>
       <ToggleTheme onClick={toggleTheme} title="Zmień schemat kolorów">
         {colorTheme === "dark" ? <FaMoon /> : <FaSun />}
       </ToggleTheme>
+      <Filters>
+        <select value={currentFilterType} onChange={handleFilterTypeChange}>
+          {Object.entries(filterTypes).map(filter => (
+            <option key={filter[0]} value={filter[0]}>
+              {filter[1]}
+            </option>
+          ))}
+        </select>
+        <input
+          type="text"
+          value={filterValue}
+          onChange={handleFilterInputChange}
+        />
+      </Filters>
     </Wrapper>
   );
 };
