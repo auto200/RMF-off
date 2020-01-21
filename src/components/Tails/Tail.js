@@ -27,14 +27,15 @@ const Text = styled.div`
   }
 `;
 const Tail = memo(
-  ({ stationName, cover, songName, artist, defaultCover, onClick }) => {
+  ({ stationName, cover, songName, artist, defaultCover, streamURL }) => {
     const imgRef = useRef(null);
     console.log("tail rerender");
     const handleImgError = () => {
       imgRef.current.src = defaultCover;
     };
+
     return (
-      <Wrapper onClick={onClick}>
+      <Wrapper>
         <Title>{stationName}</Title>
         <Cover
           src={cover || defaultCover}
