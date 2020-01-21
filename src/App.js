@@ -44,7 +44,6 @@ function App() {
     ""
   ]);
   const [gridLayout, setGridLayout] = useState("wide");
-  //TODO: make useEffect to load/save data to localstorage about colorTheme/gridLayout
 
   useEffect(() => {
     socket.on("initialData", data => {
@@ -63,7 +62,30 @@ function App() {
         return newTails;
       });
     });
+
+    const savedTheme = window.localStorage.getItem("theme");
+    if (savedTheme) {
+      setColorTheme(savedTheme);
+    }
+
+    const savedGridLayout = window.localStorage.getItem("gridLayout");
+    if (savedGridLayout) {
+      setGridLayout(savedGridLayout);
+    }
   }, []);
+  useEffect(() => {
+    const savedTheme = window.localStorage.getItem("theme");
+    if (savedTheme !== colorTheme) {
+      window.localStorage.setItem("theme", colorTheme);
+    }
+  }, [colorTheme]);
+
+  useEffect(() => {
+    const savedGridLayout = window.localStorage.getItem("gridLayout");
+    if (savedGridLayout !== gridLayout) {
+      window.localStorage.setItem("gridLayout", gridLayout);
+    }
+  }, [gridLayout]);
 
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
