@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useRef } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -26,30 +26,32 @@ const Text = styled.div`
     margin: 0;
   }
 `;
-const Tail = ({
-  stationName,
-  cover,
-  songName,
-  artist,
-  defaultCover,
-  onClick
-}) => {
-  return (
-    <Wrapper onClick={onClick}>
-      <Title>{stationName}</Title>
-      <div>
-        <Cover src={cover || defaultCover} />
-      </div>
-      <Text>
-        {(songName && artist && (
-          <>
-            <h2>{songName}</h2>
-            <p>{artist}</p>
-          </>
-        )) || <h1>reklamy/wiadomości</h1>}
-      </Text>
-    </Wrapper>
-  );
-};
+const Tail = memo(
+  ({ stationName, cover, songName, artist, defaultCover, onClick }) => {
+    const imgRef = useRef({});
+    console.log("tail rerender");
+    const handleImgError = () => {
+      imgRef.current.src = defaultCover;
+    };
+    return (
+      <Wrapper onClick={onClick}>
+        <Title>{stationName}</Title>
+        <Cover
+          src={cover || defaultCover}
+          ref={imgRef}
+          onError={handleImgError}
+        />
+        <Text>
+          {(songName && artist && (
+            <>
+              <h2>{songName}</h2>
+              <p>{artist}</p>
+            </>
+          )) || <h1>reklamy/wiadomości</h1>}
+        </Text>
+      </Wrapper>
+    );
+  }
+);
 
 export default Tail;
