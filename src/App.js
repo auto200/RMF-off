@@ -6,6 +6,8 @@ import Tails from "./components/Tails";
 import Player from "./Player";
 import socketIO from "socket.io-client";
 
+import { headerHeight } from "./utils/constants";
+
 const GlobalStyle = createGlobalStyle`
   html, body{
     margin: 0;
@@ -13,6 +15,9 @@ const GlobalStyle = createGlobalStyle`
     font-family: consolas;
     background-color: ${({ theme }) => theme.colors.primary};
     transition: color, 0.3s, background-color 0.3s;
+    #root{
+      margin-top: ${headerHeight + "px"};
+    }
 
     *,*::before,*::after{
       box-sizing: border-box;
@@ -38,6 +43,8 @@ function App() {
     "stationName",
     ""
   ]);
+  const [gridLayout, setGridLayout] = useState("wide");
+  //TODO: make useEffect to load/save data to localstorage about colorTheme/gridLayout
 
   useEffect(() => {
     socket.on("initialData", data => {
@@ -70,6 +77,9 @@ function App() {
   const toggleTheme = () =>
     setColorTheme(prev => (prev === "dark" ? "light" : "dark"));
 
+  const toggleGridLayout = () =>
+    setGridLayout(prev => (prev === "wide" ? "small" : "wide"));
+
   return (
     <ThemeProvider theme={colorTheme === "dark" ? darkTheme : lightTheme}>
       <>
@@ -81,8 +91,10 @@ function App() {
           filterValue={filterValue}
           setFilter={setFilter}
           filterTypes={filterTypes}
+          gridLayout={gridLayout}
+          toggleGridLayout={toggleGridLayout}
         />
-        <Tails tails={filtredTails} />
+        <Tails tails={filtredTails} gridLayout={gridLayout} />
         <Player url={currentRadioUrl} />
       </>
     </ThemeProvider>
