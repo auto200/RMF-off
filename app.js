@@ -1,22 +1,22 @@
 const axios = require("axios");
 const getUrls = require("get-urls");
-const express = require("express");
+const app = require("express")();
 const decode = require("ent/decode");
 const cors = require("cors");
+const socketIO = require("socket.io");
 
-const app = express();
 let tails = {};
 
 app.use(cors());
 
-const allStationsLink = "https://www.rmfon.pl/stacje/ajax_playing_main.txt";
-
-app.get("/", (req, res) => {
-  res.send(Object.values(tails));
+const server = app.listen(3000, () => {
+  console.log("listening on port 3000");
 });
 
-app.listen(3000, () => {
-  console.log("listening on port 3000");
+const io = socketIO(server);
+
+io.on("connect", socket => {
+  socket.emit("initialData", Object.values(tails));
 });
 
 const main = async () => {
@@ -33,11 +33,6 @@ const main = async () => {
         delete streams[key];
         return;
       }
-      if (!Object.keys(streams).includes(key)) {
-        console.log("stationName id doesnt match stram id");
-        delete stationNames[key];
-        return;
-      }
       tails[key] = {
         id: key,
         stationName: decode(stationNames[key]),
@@ -51,20 +46,31 @@ const main = async () => {
   const getRecentDataLoop = async () => {
     console.log("getting new data about songs");
     try {
-      const { data } = await axios.get(allStationsLink);
+      const { data } = await axios.get(
+        "https://www.rmfon.pl/stacje/ajax_playing_main.txt"
+      );
       delete data.generate;
       const dataArray = Object.entries(data);
+      let newData = {};
       dataArray.forEach(radio => {
         const id = radio[0].slice(5);
         if (!tails[id]) return;
         const obj = {
+          ...tails[id],
           artist: decode(radio[1].name),
           songName: decode(radio[1].utwor),
           cover: radio[1].coverBigUrl
         };
-        tails[id] = { ...tails[id], ...obj };
+        if (obj.songName !== tails[id].songName) {
+          newData[id] = obj;
+        }
       });
-    } catch (err) {}
+      tails = { ...tails, ...newData };
+      console.log(newData);
+      io.emit("dataUpdate", Object.values(newData));
+    } catch (err) {
+      console.log(err);
+    }
     setTimeout(() => {
       getRecentDataLoop();
     }, 15000);
