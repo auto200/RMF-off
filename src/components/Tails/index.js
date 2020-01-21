@@ -1,19 +1,23 @@
 import React from "react";
 import styled from "styled-components";
 import Tail from "./Tail";
-import { headerHeight } from "../../utils/constants";
 
 const Wrapper = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: ${({ gridLayout }) =>
+    gridLayout === "wide"
+      ? "repeat(auto-fit, minmax(300px, 1fr))"
+      : "repeat(auto-fit, minmax(150px, 1fr))"};
   grid-gap: 15px;
-  padding: ${headerHeight + 15 + "px"} 15px 15px 15px;
+  justify-content: space-around;
+  padding: 15px;
+  overflow: hidden;
 `;
 
-const Tails = ({ tails }) => {
+const Tails = ({ tails, gridLayout }) => {
   return (
-    <Wrapper>
+    <Wrapper gridLayout={gridLayout}>
       {tails.map(({ id, stationName, cover, songName, artist, streamURL }) => {
         const defaultCover =
           "https://banner2.cleanpng.com/20180501/yxq/kisspng-t-shirt-twitch-emote-youtube-pepe-the-frog-on-saturday-5ae91f46dde8a4.441902551525227334909.jpg";
@@ -25,6 +29,7 @@ const Tails = ({ tails }) => {
             songName={songName}
             artist={artist}
             defaultCover={defaultCover}
+            streamURL={streamURL}
           ></Tail>
         );
       })}
