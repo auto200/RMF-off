@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { headerHeight } from "../utils/constants";
 import { FaMoon, FaSun } from "react-icons/fa";
+import { TiThLarge } from "react-icons/ti";
+import { MdApps } from "react-icons/md";
 
 const Wrapper = styled.header`
   position: fixed;
@@ -13,6 +15,7 @@ const Wrapper = styled.header`
   background-color: ${({ theme }) => theme.colors.secondary};
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 const ToggleTheme = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
@@ -24,6 +27,14 @@ const ToggleTheme = styled.div`
   cursor: pointer;
 `;
 const Filters = styled.div``;
+const LayoutIconWrapper = styled.div`
+  width: 40px;
+  height: 40px;
+  font-size: 38px;
+  color: ${({ theme }) => theme.colors.regularText};
+  cursor: pointer;
+  user-select: none;
+`;
 
 const Header = ({
   toggleTheme,
@@ -31,7 +42,9 @@ const Header = ({
   currentFilterType,
   filterValue,
   setFilter,
-  filterTypes
+  filterTypes,
+  gridLayout,
+  toggleGridLayout
 }) => {
   const handleFilterTypeChange = e => {
     const val = e.target.value;
@@ -60,6 +73,9 @@ const Header = ({
           onChange={handleFilterInputChange}
         />
       </Filters>
+      <LayoutIconWrapper onClick={toggleGridLayout}>
+        {gridLayout === "wide" ? <TiThLarge /> : <MdApps />}
+      </LayoutIconWrapper>
     </Wrapper>
   );
 };
