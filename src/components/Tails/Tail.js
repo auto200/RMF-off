@@ -9,13 +9,13 @@ const Wrapper = styled.div`
   border: 2px solid ${({ theme }) => theme.colors.secondary};
 `;
 const Title = styled.h1`
-  font-size: 35px;
+  font-size: 2rem;
   font-weight: bold;
   margin: 10px;
   color: ${({ theme }) => theme.colors.highlightText};
 `;
 const Cover = styled.img`
-  max-width: 300px;
+  max-width: 95%;
   filter: ${({ theme }) => `brightness(${theme.imgBrightness})`};
   transition: filter 0.3s;
   object-fit: cover;
@@ -28,7 +28,7 @@ const Text = styled.div`
 `;
 const Tail = memo(
   ({ stationName, cover, songName, artist, defaultCover, onClick }) => {
-    const imgRef = useRef({});
+    const imgRef = useRef(null);
     console.log("tail rerender");
     const handleImgError = () => {
       imgRef.current.src = defaultCover;
