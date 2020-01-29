@@ -5,7 +5,8 @@ export const darkTheme = {
     regularText: "#dcdde1",
     highlightText: "#ffffff"
   },
-  imgBrightness: 0.7
+  //higher -> less visible
+  imgBrightness: 0.3
 };
 export const lightTheme = {
   colors: {
@@ -14,5 +15,6 @@ export const lightTheme = {
     regularText: "#393939",
     highlightText: "#181a1b"
   },
-  imgBrightness: 1
+  //higher -> less visible
+  imgBrightness: 0
 };
