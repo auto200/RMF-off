@@ -34,7 +34,7 @@ const filterTypes = {
 const socket = socketIO("http://localhost:3000");
 
 function App() {
-  const [colorTheme, setColorTheme] = useState("dark");
+  const [darkMode, setDarkMode] = useState(true);
   const [allTails, setAllTails] = useState([]);
   window.tails = allTails;
   const [filtredTails, setFiltredTails] = useState([]);
@@ -42,7 +42,7 @@ function App() {
     "stationName",
     ""
   ]);
-  const [gridLayout, setGridLayout] = useState("wide");
+  const [wideGridLayout, setWideGridLayout] = useState(true);
 
   useEffect(() => {
     socket.on("initialData", data => {
@@ -61,30 +61,20 @@ function App() {
       });
     });
 
-    const savedTheme = window.localStorage.getItem("theme");
-    if (savedTheme) {
-      setColorTheme(savedTheme);
-    }
+    const savedTheme = window.localStorage.getItem("darkMode");
+    setDarkMode(!!savedTheme);
 
-    const savedGridLayout = window.localStorage.getItem("gridLayout");
-    if (savedGridLayout) {
-      setGridLayout(savedGridLayout);
-    }
+    const savedGridLayout = window.localStorage.getItem("wideGridLayout");
+    setWideGridLayout(!!savedGridLayout);
   }, []);
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem("theme");
-    if (savedTheme !== colorTheme) {
-      window.localStorage.setItem("theme", colorTheme);
-    }
-  }, [colorTheme]);
+    window.localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   useEffect(() => {
-    const savedGridLayout = window.localStorage.getItem("gridLayout");
-    if (savedGridLayout !== gridLayout) {
-      window.localStorage.setItem("gridLayout", gridLayout);
-    }
-  }, [gridLayout]);
+    window.localStorage.setItem("wideGridLayout", wideGridLayout);
+  }, [wideGridLayout]);
 
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
@@ -95,28 +85,26 @@ function App() {
     );
   }, [allTails, filterValue, currentFilterType]);
 
-  const toggleTheme = () =>
-    setColorTheme(prev => (prev === "dark" ? "light" : "dark"));
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
 
-  const toggleGridLayout = () =>
-    setGridLayout(prev => (prev === "wide" ? "small" : "wide"));
+  const toggleGridLayout = () => setWideGridLayout(prev => !prev);
 
   return (
-    <ThemeProvider theme={colorTheme === "dark" ? darkTheme : lightTheme}>
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <>
         <GlobalStyle />
         <Header
-          toggleTheme={toggleTheme}
-          colorTheme={colorTheme}
+          toggleDarkMode={toggleDarkMode}
+          darkMode={darkMode}
           currentFilterType={currentFilterType}
           filterValue={filterValue}
           setFilter={setFilter}
           filterTypes={filterTypes}
-          gridLayout={gridLayout}
+          wideGridLayout={wideGridLayout}
           toggleGridLayout={toggleGridLayout}
         />
         <PlayerContext>
-          <Tails tails={filtredTails} gridLayout={gridLayout} />
+          <Tails tails={filtredTails} wideGridLayout={wideGridLayout} />
           <Player />
         </PlayerContext>
       </>

@@ -34,16 +34,19 @@ const LayoutIconWrapper = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
   cursor: pointer;
   user-select: none;
+  @media (max-width: 1100px) {
+    display: none;
+  }
 `;
 
 const Header = ({
-  toggleTheme,
-  colorTheme,
+  toggleDarkMode,
+  darkMode,
   currentFilterType,
   filterValue,
   setFilter,
   filterTypes,
-  gridLayout,
+  wideGridLayout,
   toggleGridLayout
 }) => {
   const handleFilterTypeChange = e => {
@@ -56,8 +59,8 @@ const Header = ({
   };
   return (
     <Wrapper>
-      <ToggleTheme onClick={toggleTheme} title="Zmień schemat kolorów">
-        {colorTheme === "dark" ? <FaMoon /> : <FaSun />}
+      <ToggleTheme onClick={toggleDarkMode} title="Zmień schemat kolorów">
+        {darkMode ? <FaMoon /> : <FaSun />}
       </ToggleTheme>
       <Filters>
         <select value={currentFilterType} onChange={handleFilterTypeChange}>
@@ -74,7 +77,7 @@ const Header = ({
         />
       </Filters>
       <LayoutIconWrapper onClick={toggleGridLayout}>
-        {gridLayout === "wide" ? <TiThLarge /> : <MdApps />}
+        {wideGridLayout ? <TiThLarge /> : <MdApps />}
       </LayoutIconWrapper>
     </Wrapper>
   );
