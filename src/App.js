@@ -3,9 +3,9 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./utils/themes";
 import Header from "./components/Header";
 import Tails from "./components/Tails";
-import Player from "./Player";
+import Player from "./components/Player";
 import socketIO from "socket.io-client";
-
+import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight } from "./utils/constants";
 
 const GlobalStyle = createGlobalStyle`
@@ -35,10 +35,9 @@ const socket = socketIO("http://localhost:3000");
 
 function App() {
   const [colorTheme, setColorTheme] = useState("dark");
-  const [tails, setTails] = useState([]);
-  window.tails = tails;
+  const [allTails, setAllTails] = useState([]);
+  window.tails = allTails;
   const [filtredTails, setFiltredTails] = useState([]);
-  const [currentRadioUrl, setCurrentRadioUrl] = useState("");
   const [[currentFilterType, filterValue], setFilter] = useState([
     "stationName",
     ""
@@ -47,11 +46,10 @@ function App() {
 
   useEffect(() => {
     socket.on("initialData", data => {
-      setTails(data);
+      setAllTails(data);
     });
     socket.on("dataUpdate", data => {
-      console.log(data);
-      setTails(prev => {
+      setAllTails(prev => {
         const newTails = prev.map(tail => {
           const modifiedTail = data.find(obj => obj.id === tail.id);
           if (modifiedTail) {
@@ -73,6 +71,7 @@ function App() {
       setGridLayout(savedGridLayout);
     }
   }, []);
+
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("theme");
     if (savedTheme !== colorTheme) {
@@ -90,11 +89,11 @@ function App() {
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
     setFiltredTails(() =>
-      tails.filter(tail =>
+      allTails.filter(tail =>
         tail[currentFilterType].toLowerCase().includes(filterVal)
       )
     );
-  }, [tails, filterValue, currentFilterType]);
+  }, [allTails, filterValue, currentFilterType]);
 
   const toggleTheme = () =>
     setColorTheme(prev => (prev === "dark" ? "light" : "dark"));
@@ -116,8 +115,10 @@ function App() {
           gridLayout={gridLayout}
           toggleGridLayout={toggleGridLayout}
         />
-        <Tails tails={filtredTails} gridLayout={gridLayout} />
-        <Player url={currentRadioUrl} />
+        <PlayerContext>
+          <Tails tails={filtredTails} gridLayout={gridLayout} />
+          <Player />
+        </PlayerContext>
       </>
     </ThemeProvider>
   );
