@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Tail from "./Tail";
+import { usePlayer } from "../../contexts/PlayerContext";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
 `;
 
 const Tails = ({ tails, gridLayout }) => {
+  const { currentStationId, handleActionButtonClick } = usePlayer();
   return (
     <Wrapper gridLayout={gridLayout}>
       {tails.map(({ id, stationName, cover, songName, artist, streamURL }) => {
@@ -30,6 +32,10 @@ const Tails = ({ tails, gridLayout }) => {
             artist={artist}
             defaultCover={defaultCover}
             streamURL={streamURL}
+            //player props
+            id={id}
+            isActive={currentStationId === id}
+            handleActionButtonClick={handleActionButtonClick}
           ></Tail>
         );
       })}
