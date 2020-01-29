@@ -10,6 +10,7 @@ const Wrapper = styled.span`
   padding: 0;
   display: grid;
   place-items: center;
+  cursor: pointer;
   @keyframes rotate {
     from {
       transform: rotate(0deg);
