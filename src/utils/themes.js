@@ -5,7 +5,7 @@ export const darkTheme = {
     regularText: "#dcdde1",
     highlightText: "#ffffff"
   },
-  //higher -> less visible
+  //higher = less bright
   imgBrightness: 0.3
 };
 export const lightTheme = {
@@ -15,6 +15,6 @@ export const lightTheme = {
     regularText: "#393939",
     highlightText: "#181a1b"
   },
-  //higher -> less visible
+  //higher = less bright
   imgBrightness: 0
 };
