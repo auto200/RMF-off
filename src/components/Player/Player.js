@@ -117,7 +117,6 @@ const Player = () => {
   useEffect(() => {
     //idk it seems to be so loud so thats why 550 and not 100 (0-1 range)
     audioRef.current.volume = volume / 550;
-    audioRef.current.muted = true;
   }, [volume]);
 
   useEffect(() => {
