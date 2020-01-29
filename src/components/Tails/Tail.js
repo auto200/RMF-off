@@ -90,9 +90,13 @@ const Tail = memo(
     };
 
     return (
-      <Wrapper onClick={handleClick}>
+      <Wrapper>
         <Title>{stationName}</Title>
-        <CoverContainer cover={cover} defaultCover={defaultCover}>
+        <CoverContainer
+          cover={cover}
+          defaultCover={defaultCover}
+          onClick={handleClick}
+        >
           <ActionButtonWrapper isActive={isActive}>
             <ActionButton isActive={isActive} />
           </ActionButtonWrapper>
