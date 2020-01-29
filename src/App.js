@@ -3,7 +3,7 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./utils/themes";
 import Header from "./components/Header";
 import Tails from "./components/Tails";
-import Player from "./components/Player";
+import Player from "./components/Player/Player";
 import socketIO from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight } from "./utils/constants";
