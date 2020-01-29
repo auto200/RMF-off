@@ -1,10 +1,13 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { usePlayer } from "../../contexts/PlayerContext";
-import { IoMdVolumeHigh } from "react-icons/io";
+import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { playerHeight } from "../../utils/constants";
 import ActionButton from "../ActionButton/ActionButton";
 import { playerStates } from "../../contexts/PlayerContext";
+import Slider from "react-rangeslider";
+import "react-rangeslider/lib/index.css";
+import useDebounce from "../../utils/hooks/useDebounce";
 
 const Wrapper = styled.div`
   height: ${playerHeight + "px"};
@@ -42,10 +45,40 @@ const TrackInfoContainer = styled.div`
   width: 30%;
   padding: 3px 0;
 `;
-const VolumeSlider = styled.div`
+const AudioSettingsContainer = styled.div`
+  position: relative;
   width: 10%;
   color: ${({ theme }) => theme.colors.regularText};
   font-size: 35px;
+  display: grid;
+  place-items: center;
+`;
+const VolumeSliderContainer = styled.div`
+  position: absolute;
+  bottom: ${playerHeight - 15 + "px"};
+  z-index: -20000;
+  width: 30px;
+  display: grid;
+  left: 5px;
+  place-items: center;
+  background-color: ${({ theme }) => theme.colors.primary};
+  border: 1px solid ${({ theme }) => theme.colors.regularText};
+  transform: translateY(15%) scale(0);
+  transform-origin: bottom;
+  transition: transform 0.5s ease, scale 0.5s ease;
+  .rangeslider {
+    margin: 0;
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .rangeslider__fill {
+    background-color: ${({ theme }) => theme.colors.highlightText};
+  }
+  ${AudioSettingsContainer}:hover & {
+    transform: translateY(0) scale(1);
+  }
+  /* &:hover {
+    transform: translateY(0);
+  } */
 `;
 const ActionButtonWrapper = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
@@ -56,6 +89,11 @@ const ActionButtonWrapper = styled.div`
   width: 15%;
   cursor: pointer;
 `;
+const AudioIcon = ({ volume }) => {
+  if (volume === 0) return <FaVolumeMute />;
+  if (volume > 0 && volume < 51) return <FaVolumeDown />;
+  return <FaVolumeUp />;
+};
 
 const Player = () => {
   const {
@@ -64,14 +102,27 @@ const Player = () => {
     setPlayerState,
     handleActionButtonClick
   } = usePlayer();
+  const [volume, setVolume] = useState(1);
 
+  const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef(null);
 
   useEffect(() => {
-    //temporary
-    //TODO: store and get this value from localstorage (debounce it for sure)
-    audioRef.current.volume = 0.01;
+    const savedVolume = window.localStorage.getItem("volume");
+    if (savedVolume) {
+      setVolume(savedVolume * 1);
+    }
   }, []);
+
+  useEffect(() => {
+    //idk it seems to be so loud so thats why 550 and not 100 (0-1 range)
+    audioRef.current.volume = volume / 550;
+    audioRef.current.muted = true;
+  }, [volume]);
+
+  useEffect(() => {
+    window.localStorage.setItem("volume", debouncedVolume);
+  }, [debouncedVolume]);
 
   useEffect(() => {
     if (playerState === playerStates.PLAYING) {
@@ -90,10 +141,16 @@ const Player = () => {
         <Field highlight>{songName}</Field>
         <Field>{artist}</Field>
       </TrackInfoContainer>
-      {/*TODO: make slider */}
-      <VolumeSlider>
-        <IoMdVolumeHigh />
-      </VolumeSlider>
+      <AudioSettingsContainer>
+        <AudioIcon volume={volume} />
+        <VolumeSliderContainer>
+          <Slider
+            orientation="vertical"
+            value={volume}
+            onChange={val => setVolume(val)}
+          />
+        </VolumeSliderContainer>
+      </AudioSettingsContainer>
       <ActionButtonWrapper onClick={() => handleActionButtonClick()}>
         <ActionButton />
       </ActionButtonWrapper>
