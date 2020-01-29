@@ -10,6 +10,13 @@ import "react-rangeslider/lib/index.css";
 import useDebounce from "../../utils/hooks/useDebounce";
 
 const Wrapper = styled.div`
+  display: grid;
+  grid-template-columns: 25% 12% 33% 15% 15%;
+  grid-template-rows: 100%;
+  /* place-items: center; */
+  align-items: center;
+  padding: 5px;
+  grid-gap: 5px;
   height: ${playerHeight + "px"};
   position: fixed;
   z-index: 10;
@@ -21,10 +28,7 @@ const Wrapper = styled.div`
   transition: transform 1s ease;
   background-color: ${({ theme }) => theme.colors.secondary};
   width: 100%;
-  max-width: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  max-width: 500px;
   border-top: 1px solid ${({ theme }) => theme.colors.regularText};
   padding: 0 15px;
 `;
@@ -32,40 +36,37 @@ const Field = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
   color: ${({ theme, highlight }) =>
     highlight ? theme.colors.highlightText : theme.colors.regularText};
-  width: ${({ width }) => width};
 `;
 const Cover = styled.img`
-  height: 80%;
-  width: auto;
+  max-height: 85%;
 `;
 const TrackInfoContainer = styled.div`
   overflow: hidden;
-  width: 30%;
-  padding: 3px 0;
+  max-width: 100%;
 `;
 const AudioSettingsContainer = styled.div`
   position: relative;
-  width: 10%;
   color: ${({ theme }) => theme.colors.regularText};
   font-size: 35px;
   display: grid;
   place-items: center;
+  cursor: pointer;
 `;
 const VolumeSliderContainer = styled.div`
   position: absolute;
   bottom: ${playerHeight - 15 + "px"};
-  z-index: -20000;
-  width: 30px;
+  z-index: 20;
+  width: 35px;
   display: grid;
-  left: 5px;
   place-items: center;
   background-color: ${({ theme }) => theme.colors.primary};
   border: 1px solid ${({ theme }) => theme.colors.regularText};
   transform: translateY(15%) scale(0);
   transform-origin: bottom;
-  transition: transform 0.5s ease, scale 0.5s ease;
+  transition: transform 0.5s ease;
   .rangeslider {
     margin: 0;
     background-color: ${({ theme }) => theme.colors.secondary};
@@ -76,9 +77,9 @@ const VolumeSliderContainer = styled.div`
   ${AudioSettingsContainer}:hover & {
     transform: translateY(0) scale(1);
   }
-  /* &:hover {
-    transform: translateY(0);
-  } */
+  .rangeslider__labels {
+    visibility: hidden;
+  }
 `;
 const ActionButtonWrapper = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
@@ -86,7 +87,6 @@ const ActionButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 15%;
   cursor: pointer;
 `;
 const AudioIcon = ({ volume }) => {
@@ -115,7 +115,7 @@ const Player = () => {
   }, []);
 
   useEffect(() => {
-    //idk it seems to be so loud so thats why 550 and not 100 (0-1 range)
+    //idk it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
     audioRef.current.volume = volume / 550;
   }, [volume]);
 
@@ -134,7 +134,7 @@ const Player = () => {
   //TODO make this on grid or someting
   return (
     <Wrapper isShown={stationName}>
-      <Field width="20%">{stationName}</Field>
+      <Field>{stationName}</Field>
       <Cover src={cover} />
       <TrackInfoContainer>
         <Field highlight>{songName}</Field>
@@ -147,6 +147,7 @@ const Player = () => {
             orientation="vertical"
             value={volume}
             onChange={val => setVolume(val)}
+            tooltip={false}
           />
         </VolumeSliderContainer>
       </AudioSettingsContainer>
