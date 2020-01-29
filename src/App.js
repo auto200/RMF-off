@@ -31,7 +31,7 @@ const filterTypes = {
   songName: "Nazwa piosenki"
 };
 
-const socket = socketIO("http://localhost:3000");
+const socket = socketIO("http://192.168.0.103:3000");
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
