@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { usePlayer } from "../contexts/PlayerContext";
+import { usePlayer } from "../../contexts/PlayerContext";
 import { IoMdVolumeHigh } from "react-icons/io";
-import { playerHeight } from "../utils/constants";
-import ActionButton from "./ActionButton/ActionButton";
-import { playerStates } from "../contexts/PlayerContext";
+import { playerHeight } from "../../utils/constants";
+import ActionButton from "../ActionButton/ActionButton";
+import { playerStates } from "../../contexts/PlayerContext";
 
 const Wrapper = styled.div`
   height: ${playerHeight + "px"};
@@ -42,7 +42,7 @@ const TrackInfoContainer = styled.div`
   width: 30%;
   padding: 3px 0;
 `;
-const VolumeSlider = styled(IoMdVolumeHigh)`
+const VolumeSlider = styled.div`
   width: 10%;
   color: ${({ theme }) => theme.colors.regularText};
   font-size: 35px;
@@ -91,7 +91,9 @@ const Player = () => {
         <Field>{artist}</Field>
       </TrackInfoContainer>
       {/*TODO: make slider */}
-      <VolumeSlider />
+      <VolumeSlider>
+        <IoMdVolumeHigh />
+      </VolumeSlider>
       <ActionButtonWrapper onClick={() => handleActionButtonClick()}>
         <ActionButton />
       </ActionButtonWrapper>
