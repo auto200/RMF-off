@@ -1,5 +1,6 @@
-import React, { memo, useRef } from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
+import ActionButton from "../ActionButton/ActionButton";
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,11 +15,45 @@ const Title = styled.h1`
   margin: 10px;
   color: ${({ theme }) => theme.colors.highlightText};
 `;
-const Cover = styled.img`
-  max-width: 95%;
-  filter: ${({ theme }) => `brightness(${theme.imgBrightness})`};
-  transition: filter 0.3s;
-  object-fit: cover;
+const CoverContainer = styled.div.attrs(({ cover, defaultCover }) => ({
+  style: {
+    backgroundImage: `url(${cover}), url(${defaultCover})`
+  }
+}))`
+  position: relative;
+  font-size: 70px;
+  color: ${({ theme }) => theme.colors.highlightText};
+  cursor: pointer;
+  width: 95%;
+  height: 300px;
+  background-position: center;
+  background-size: cover;
+
+  /* brightness filter */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, ${({ theme }) => theme.imgBrightness});
+    transition: background-color 0.3s;
+  }
+`;
+
+const ActionButtonWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  opacity: ${({ isActive }) => (isActive ? 0.7 : 0)};
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: ${({ isActive }) => !isActive && 0.7};
+  }
 `;
 const Text = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
@@ -27,25 +62,45 @@ const Text = styled.div`
   }
 `;
 const Tail = memo(
-  ({ stationName, cover, songName, artist, defaultCover, streamURL }) => {
-    const imgRef = useRef(null);
-    console.log("tail rerender");
-    const handleImgError = () => {
-      imgRef.current.src = defaultCover;
+  ({
+    stationName,
+    cover,
+    songName,
+    artist,
+    defaultCover,
+    streamURL,
+    //player props
+    id,
+    isActive,
+    handleActionButtonClick
+  }) => {
+    const handleClick = () => {
+      if (isActive) {
+        handleActionButtonClick(null, true);
+      } else {
+        handleActionButtonClick({
+          id,
+          stationName,
+          cover: cover || defaultCover,
+          songName,
+          artist,
+          streamURL
+        });
+      }
     };
 
     return (
-      <Wrapper>
+      <Wrapper onClick={handleClick}>
         <Title>{stationName}</Title>
-        <Cover
-          src={cover || defaultCover}
-          ref={imgRef}
-          onError={handleImgError}
-        />
+        <CoverContainer cover={cover} defaultCover={defaultCover}>
+          <ActionButtonWrapper isActive={isActive}>
+            <ActionButton isActive={isActive} />
+          </ActionButtonWrapper>
+        </CoverContainer>
         <Text>
           {(songName && artist && (
             <>
-              <h2>{songName}</h2>
+              <h2 style={{ color: isActive && "red" }}>{songName}</h2>
               <p>{artist}</p>
             </>
           )) || <h1>reklamy/wiadomości</h1>}
