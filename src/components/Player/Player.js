@@ -102,7 +102,7 @@ const Player = () => {
     setPlayerState,
     handleActionButtonClick
   } = usePlayer();
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(50);
 
   const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef(null);
