@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 import ActionButton from "../ActionButton/ActionButton";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Wrapper = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const Title = styled.h1`
   margin: 10px;
   color: ${({ theme }) => theme.colors.highlightText};
 `;
-const CoverContainer = styled.div.attrs(({ cover, defaultCover }) => ({
+const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
   style: {
     backgroundImage: `url(${cover}), url(${defaultCover})`
   }
@@ -88,19 +89,26 @@ const Tail = memo(
         });
       }
     };
+    //TODO: button to search in youtube/google
 
     return (
       <Wrapper>
         <Title>{stationName}</Title>
-        <CoverContainer
-          cover={cover}
-          defaultCover={defaultCover}
-          onClick={handleClick}
-        >
-          <ActionButtonWrapper isActive={isActive}>
-            <ActionButton isActive={isActive} />
-          </ActionButtonWrapper>
-        </CoverContainer>
+        <AnimatePresence exitBeforeEnter>
+          <CoverContainer
+            cover={cover}
+            defaultCover={defaultCover}
+            onClick={handleClick}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            key={id + songName}
+          >
+            <ActionButtonWrapper isActive={isActive}>
+              <ActionButton isActive={isActive} />
+            </ActionButtonWrapper>
+          </CoverContainer>
+        </AnimatePresence>
         <Text>
           {(songName && artist && (
             <>
