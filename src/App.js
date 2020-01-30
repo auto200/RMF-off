@@ -61,20 +61,30 @@ function App() {
       });
     });
 
-    const savedTheme = window.localStorage.getItem("darkMode");
-    setDarkMode(!!savedTheme);
+    try {
+      const savedDarkMode = JSON.parse(window.localStorage.getItem("darkMode"));
+      if (savedDarkMode === null) {
+        setDarkMode(true);
+      } else {
+        setDarkMode(savedDarkMode);
+      }
+    } catch (err) {
+      setDarkMode(true);
+    }
 
-    const savedGridLayout = window.localStorage.getItem("wideGridLayout");
-    setWideGridLayout(!!savedGridLayout);
+    try {
+      const savedGridLayout = JSON.parse(
+        window.localStorage.getItem("wideGridLayout")
+      );
+      if (savedGridLayout === null) {
+        setWideGridLayout(true);
+      } else {
+        setWideGridLayout(savedGridLayout);
+      }
+    } catch (err) {
+      setWideGridLayout(true);
+    }
   }, []);
-
-  useEffect(() => {
-    window.localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
-
-  useEffect(() => {
-    window.localStorage.setItem("wideGridLayout", wideGridLayout);
-  }, [wideGridLayout]);
 
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
@@ -85,9 +95,17 @@ function App() {
     );
   }, [allTails, filterValue, currentFilterType]);
 
-  const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const toggleDarkMode = () =>
+    setDarkMode(prev => {
+      localStorage.setItem("darkMode", !prev);
+      return !prev;
+    });
 
-  const toggleGridLayout = () => setWideGridLayout(prev => !prev);
+  const toggleGridLayout = () =>
+    setWideGridLayout(prev => {
+      localStorage.setItem("wideGridLayout", !prev);
+      return !prev;
+    });
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
