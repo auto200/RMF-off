@@ -130,7 +130,6 @@ const Player = () => {
     }
   }, [playerState]);
 
-  //TODO make this on grid or someting
   return (
     <Wrapper isShown={stationName}>
       <Field>{stationName}</Field>
@@ -160,7 +159,6 @@ const Player = () => {
         onCanPlay={() => {
           audioRef.current.play();
         }}
-        // onError={}
         onPause={() => setPlayerState(playerStates.PAUSED)}
         onPlaying={() => setPlayerState(playerStates.PLAYING)}
       />
