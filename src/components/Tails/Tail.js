@@ -2,11 +2,11 @@ import React, { memo } from "react";
 import styled from "styled-components";
 import ActionButton from "../ActionButton/ActionButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaGoogle, FaYoutube } from "react-icons/fa";
+import DotMenu, { MenuItem } from "../DotMenu";
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
   text-align: center;
   border: 2px solid ${({ theme }) => theme.colors.secondary};
 `;
@@ -62,6 +62,11 @@ const Text = styled.div`
     margin: 0;
   }
 `;
+const MenuButtonContainer = styled.div`
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+`;
 const Tail = memo(
   ({
     stationName,
@@ -89,10 +94,30 @@ const Tail = memo(
         });
       }
     };
-    //TODO: button to search in youtube/google
+
+    const fullSongName = `${artist} - ${songName}`;
+    const handleGoogleSearch = () => {
+      window.open(`https://www.google.com/search?q=${fullSongName}`, "_blank");
+    };
+    const handleYoutubeSearch = () => {
+      window.open(
+        `https://www.youtube.com/results?search_query=${fullSongName}`,
+        "_blank"
+      );
+    };
 
     return (
       <Wrapper>
+        <MenuButtonContainer>
+          <DotMenu>
+            <MenuItem icon={<FaGoogle />} onClick={handleGoogleSearch}>
+              Szukaj w Google
+            </MenuItem>
+            <MenuItem icon={<FaYoutube />} onClick={handleYoutubeSearch}>
+              Szukaj w YouTube
+            </MenuItem>
+          </DotMenu>
+        </MenuButtonContainer>
         <Title>{stationName}</Title>
         <AnimatePresence exitBeforeEnter>
           <CoverContainer
