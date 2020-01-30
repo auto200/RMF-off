@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 25% 12% 33% 15% 15%;
   grid-template-rows: 100%;
-  /* place-items: center; */
   align-items: center;
   padding: 5px;
   grid-gap: 5px;
