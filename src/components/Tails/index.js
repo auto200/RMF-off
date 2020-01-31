@@ -17,7 +17,11 @@ const Wrapper = styled.div`
 `;
 
 const Tails = ({ tails, wideGridLayout }) => {
-  const { currentStationId, handleActionButtonClick } = usePlayer();
+  const {
+    currentStationId,
+    playerState,
+    handleActionButtonClick
+  } = usePlayer();
   return (
     <Wrapper wideGridLayout={wideGridLayout}>
       {tails.map(({ id, stationName, cover, songName, artist, streamURL }) => {
@@ -36,6 +40,7 @@ const Tails = ({ tails, wideGridLayout }) => {
             id={id}
             isActive={currentStationId === id}
             handleActionButtonClick={handleActionButtonClick}
+            playerState={playerState}
           ></Tail>
         );
       })}
