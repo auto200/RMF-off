@@ -159,7 +159,7 @@ const Player = () => {
         </VolumeSliderContainer>
       </AudioSettingsContainer>
       <ActionButtonWrapper onClick={() => handleActionButtonClick()}>
-        <ActionButton />
+        <ActionButton playerState={playerState} />
       </ActionButtonWrapper>
       <audio
         src={streamURL}
