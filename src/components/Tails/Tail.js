@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import styled from "styled-components";
 import ActionButton from "../ActionButton/ActionButton";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaGoogle, FaYoutube } from "react-icons/fa";
+import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
 import DotMenu, { MenuItem } from "../DotMenu";
 
 const Wrapper = styled.div`
@@ -131,11 +131,11 @@ const Tail = memo(
             key={id + songName}
           >
             <ActionButtonWrapper isActive={isActive}>
-              <ActionButton
-                playerState={playerState}
-                spinOnLoading={isActive}
-                showOnlyPlayButton={!isActive}
-              />
+              {isActive ? (
+                <ActionButton playerState={playerState} />
+              ) : (
+                <FaPlay />
+              )}
             </ActionButtonWrapper>
           </CoverContainer>
         </AnimatePresence>
