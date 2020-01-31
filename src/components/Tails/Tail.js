@@ -23,7 +23,6 @@ const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
 }))`
   position: relative;
   font-size: 70px;
-  color: ${({ theme }) => theme.colors.highlightText};
   cursor: pointer;
   width: 95%;
   height: 300px;
@@ -51,6 +50,7 @@ const ActionButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${({ theme }) => theme.colors.white};
 
   &:hover {
     opacity: ${({ isActive }) => !isActive && 0.7};
