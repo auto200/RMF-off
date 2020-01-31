@@ -78,7 +78,8 @@ const Tail = memo(
     //player props
     id,
     isActive,
-    handleActionButtonClick
+    handleActionButtonClick,
+    playerState
   }) => {
     const handleClick = () => {
       if (isActive) {
@@ -130,7 +131,11 @@ const Tail = memo(
             key={id + songName}
           >
             <ActionButtonWrapper isActive={isActive}>
-              <ActionButton isActive={isActive} />
+              <ActionButton
+                playerState={playerState}
+                spinOnLoading={isActive}
+                showOnlyPlayButton={!isActive}
+              />
             </ActionButtonWrapper>
           </CoverContainer>
         </AnimatePresence>
