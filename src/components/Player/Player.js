@@ -66,6 +66,11 @@ const VolumeSliderContainer = styled.div`
   transform: translateY(15%) scale(0);
   transform-origin: bottom;
   transition: transform 0.5s ease;
+
+  ${AudioSettingsContainer}:hover & {
+    transform: translateY(0) scale(1);
+  }
+  /*overriting imported slider styles */
   .rangeslider {
     margin: 0;
     background-color: ${({ theme }) => theme.colors.secondary};
@@ -73,11 +78,15 @@ const VolumeSliderContainer = styled.div`
   .rangeslider__fill {
     background-color: ${({ theme }) => theme.colors.highlightText};
   }
-  ${AudioSettingsContainer}:hover & {
-    transform: translateY(0) scale(1);
-  }
   .rangeslider__labels {
     visibility: hidden;
+  }
+  .rangeslider__handle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    left: -5px;
+    border-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
 const ActionButtonWrapper = styled.div`
