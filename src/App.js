@@ -33,7 +33,7 @@ const filterTypes = {
 
 const socket = socketIO("http://192.168.0.103:3000");
 
-function App() {
+const App = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [allTails, setAllTails] = useState([]);
   window.tails = allTails;
@@ -128,6 +128,6 @@ function App() {
       </>
     </ThemeProvider>
   );
-}
+};
 
 export default App;
