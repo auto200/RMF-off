@@ -2,15 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { AiOutlineLoading } from "react-icons/ai";
-import { usePlayer, playerStates } from "../../contexts/PlayerContext";
+import { playerStates } from "../../contexts/PlayerContext";
+import PropTypes from "prop-types";
 
-const Wrapper = styled.span`
-  animation: ${({ spin }) => spin && "rotate 2s linear infinite"};
-  margin: 0;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
+const LoadingButton = styled(AiOutlineLoading)`
+  animation: rotate 2s linear infinite;
+
   @keyframes rotate {
     from {
       transform: rotate(0deg);
@@ -20,24 +17,26 @@ const Wrapper = styled.span`
     }
   }
 `;
-const ActionButton = ({ isActive = true }) => {
-  const { playerState } = usePlayer();
+const ActionButton = ({ playerState }) => {
+  let Button;
 
-  const isLoading = playerState === playerStates.LOADING;
-  let Component = FaPlay;
-  if (!isActive) {
-    Component = FaPlay;
+  if (playerState === playerStates.PAUSED) {
+    Button = FaPlay;
   } else if (playerState === playerStates.PLAYING) {
-    Component = FaPause;
+    Button = FaPause;
   } else if (playerState === playerStates.LOADING) {
-    Component = AiOutlineLoading;
+    Button = LoadingButton;
   }
 
-  return (
-    <Wrapper spin={isLoading && isActive}>
-      <Component />
-    </Wrapper>
-  );
+  return <Button />;
 };
 
 export default ActionButton;
+
+ActionButton.propTypes = {
+  playerState: PropTypes.oneOf([
+    playerStates.PLAYING,
+    playerStates.LOADING,
+    playerStates.PAUSED
+  ]).isRequired
+};
