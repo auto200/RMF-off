@@ -8,6 +8,10 @@ import PropTypes from "prop-types";
 
 const Wrapper = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
   text-align: center;
   border: 2px solid ${({ theme }) => theme.colors.secondary};
 `;
@@ -57,10 +61,16 @@ const ActionButtonWrapper = styled.div`
     opacity: ${({ isActive }) => !isActive && 0.7};
   }
 `;
-const Text = styled.div`
+const TrackInfo = styled.div`
   color: ${({ theme }) => theme.colors.regularText};
-  h1 {
+  width: 100%;
+  display: grid;
+  place-items: center;
+  width: calc(100% - 55px);
+
+  h3 {
     margin: 0;
+    font-weight: normal;
   }
 `;
 const MenuButtonContainer = styled.div`
@@ -106,19 +116,10 @@ const Tail = memo(
         "_blank"
       );
     };
+    const trackData = songName && artist;
 
     return (
       <Wrapper>
-        <MenuButtonContainer>
-          <DotMenu>
-            <MenuItem icon={<FaGoogle />} onClick={handleGoogleSearch}>
-              Szukaj w Google
-            </MenuItem>
-            <MenuItem icon={<FaYoutube />} onClick={handleYoutubeSearch}>
-              Szukaj w YouTube
-            </MenuItem>
-          </DotMenu>
-        </MenuButtonContainer>
         <Title>{stationName}</Title>
         <AnimatePresence exitBeforeEnter>
           <CoverContainer
@@ -139,14 +140,26 @@ const Tail = memo(
             </ActionButtonWrapper>
           </CoverContainer>
         </AnimatePresence>
-        <Text>
-          {(songName && artist && (
+        <TrackInfo>
+          {trackData ? (
             <>
               <h2 style={{ color: isActive && "red" }}>{songName}</h2>
-              <p>{artist}</p>
+              <h3>{artist}</h3>
             </>
-          )) || <h1>reklamy/wiadomości</h1>}
-        </Text>
+          ) : (
+            <h1>reklamy / wiadomości</h1>
+          )}
+        </TrackInfo>
+        <MenuButtonContainer>
+          <DotMenu>
+            <MenuItem icon={<FaGoogle />} onClick={handleGoogleSearch}>
+              Szukaj w Google
+            </MenuItem>
+            <MenuItem icon={<FaYoutube />} onClick={handleYoutubeSearch}>
+              Szukaj w YouTube
+            </MenuItem>
+          </DotMenu>
+        </MenuButtonContainer>
       </Wrapper>
     );
   }
