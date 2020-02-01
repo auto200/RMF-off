@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { headerHeight } from "../utils/constants";
+import { headerHeight } from "../../utils/constants";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { TiThLarge } from "react-icons/ti";
 import { MdApps } from "react-icons/md";

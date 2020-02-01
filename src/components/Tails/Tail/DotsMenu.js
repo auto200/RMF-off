@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-const MenuButtonContainer = styled.button`
+const Container = styled.button`
   all: unset;
   height: 30px;
   padding: 5px;
@@ -27,12 +27,12 @@ const MenuDots = styled.div`
     background-color: inherit;
   }
   ::before {
-    bottom: 10px;
+    top: 20px;
   }
   ::after {
     bottom: -5px;
   }
-  ${MenuButtonContainer}:hover & {
+  ${Container}:hover & {
     background-color: ${({ theme }) => theme.colors.regularText};
   }
 `;
@@ -54,7 +54,7 @@ const MenuContainer = styled.ul`
   transform-origin: 95% 85%;
   transform: scale(0);
   transition: transform 0.3s ease;
-  ${MenuButtonContainer}:focus & {
+  ${Container}:focus & {
     transform: scale(1);
   }
 `;
@@ -90,10 +90,10 @@ export const MenuItem = ({ icon, children, ...props }) => {
 
 const DotMenu = ({ children, ...props }) => {
   return (
-    <MenuButtonContainer {...props}>
+    <Container {...props}>
       <MenuDots />
       <MenuContainer>{children}</MenuContainer>
-    </MenuButtonContainer>
+    </Container>
   );
 };
 

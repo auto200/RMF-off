@@ -1,9 +1,9 @@
 import React, { memo } from "react";
 import styled from "styled-components";
-import ActionButton from "../ActionButton/ActionButton";
+import PlayerStateIcon from "../../PlayerStateIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
-import DotMenu, { MenuItem } from "../DotMenu";
+import DotMenu, { MenuItem } from "./DotsMenu";
 import PropTypes from "prop-types";
 
 const Wrapper = styled.div`
@@ -132,7 +132,7 @@ const Tail = memo(
           >
             <ActionButtonWrapper isActive={isActive}>
               {isActive ? (
-                <ActionButton playerState={playerState} />
+                <PlayerStateIcon playerState={playerState} />
               ) : (
                 <FaPlay />
               )}

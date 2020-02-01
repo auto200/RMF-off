@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { usePlayer } from "../../contexts/PlayerContext";
 import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { playerHeight } from "../../utils/constants";
-import ActionButton from "../ActionButton/ActionButton";
+import PlayerStateIcon from "../PlayerStateIcon";
 import { playerStates } from "../../contexts/PlayerContext";
 import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
@@ -159,7 +159,7 @@ const Player = () => {
         </VolumeSliderContainer>
       </AudioSettingsContainer>
       <ActionButtonWrapper onClick={() => handleActionButtonClick()}>
-        <ActionButton playerState={playerState} />
+        <PlayerStateIcon playerState={playerState} />
       </ActionButtonWrapper>
       <audio
         src={streamURL}
