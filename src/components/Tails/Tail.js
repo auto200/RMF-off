@@ -4,6 +4,7 @@ import ActionButton from "../ActionButton/ActionButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
 import DotMenu, { MenuItem } from "../DotMenu";
+import PropTypes from "prop-types";
 
 const Wrapper = styled.div`
   position: relative;
@@ -95,7 +96,6 @@ const Tail = memo(
         });
       }
     };
-
     const fullSongName = `${artist} - ${songName}`;
     const handleGoogleSearch = () => {
       window.open(`https://www.google.com/search?q=${fullSongName}`, "_blank");
@@ -153,3 +153,17 @@ const Tail = memo(
 );
 
 export default Tail;
+
+Tail.propTypes = {
+  stationName: PropTypes.string.isRequired,
+  cover: PropTypes.string,
+  songName: PropTypes.string,
+  artist: PropTypes.string,
+  defaultCover: PropTypes.string.isRequired,
+  streamURL: PropTypes.string.isRequired,
+  //player props
+  id: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  handleActionButtonClick: PropTypes.func.isRequired,
+  playerState: PropTypes.string.isRequired
+};

@@ -4,6 +4,7 @@ import { headerHeight } from "../utils/constants";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { TiThLarge } from "react-icons/ti";
 import { MdApps } from "react-icons/md";
+import PropTypes from "prop-types";
 
 const Wrapper = styled.header`
   position: fixed;
@@ -84,3 +85,14 @@ const Header = ({
 };
 
 export default Header;
+
+Header.propTypes = {
+  toggleDarkMode: PropTypes.func.isRequired,
+  darkMode: PropTypes.bool.isRequired,
+  currentFilterType: PropTypes.string.isRequired,
+  filterValue: PropTypes.string.isRequired,
+  setFilter: PropTypes.func.isRequired,
+  filterTypes: PropTypes.object.isRequired,
+  wideGridLayout: PropTypes.bool.isRequired,
+  toggleGridLayout: PropTypes.func.isRequired
+};

@@ -17,7 +17,7 @@ const LoadingButton = styled(AiOutlineLoading)`
     }
   }
 `;
-const ActionButton = ({ playerState }) => {
+const ActionButton = ({ playerState, ...props }) => {
   let Button;
 
   if (playerState === playerStates.PAUSED) {
@@ -28,7 +28,7 @@ const ActionButton = ({ playerState }) => {
     Button = LoadingButton;
   }
 
-  return <Button />;
+  return <Button {...props} />;
 };
 
 export default ActionButton;

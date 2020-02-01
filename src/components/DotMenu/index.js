@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const MenuButtonContainer = styled.button`
   all: unset;
@@ -57,7 +58,7 @@ const MenuContainer = styled.ul`
     transform: scale(1);
   }
 `;
-export const StyledMenuItem = styled.li`
+const StyledMenuItem = styled.li`
   display: flex;
   align-items: center;
   padding: 16px;
@@ -78,18 +79,18 @@ const MenuItemIcon = styled.div`
   display: grid;
   place-items: center;
 `;
-export const MenuItem = ({ icon, children, onClick }) => {
+export const MenuItem = ({ icon, children, ...props }) => {
   return (
-    <StyledMenuItem onClick={onClick}>
-      {!!icon && <MenuItemIcon>{icon}</MenuItemIcon>}
+    <StyledMenuItem {...props}>
+      {icon && <MenuItemIcon>{icon}</MenuItemIcon>}
       {children}
     </StyledMenuItem>
   );
 };
 
-const DotMenu = ({ children }) => {
+const DotMenu = ({ children, ...props }) => {
   return (
-    <MenuButtonContainer>
+    <MenuButtonContainer {...props}>
       <MenuDots />
       <MenuContainer>{children}</MenuContainer>
     </MenuButtonContainer>
@@ -97,3 +98,12 @@ const DotMenu = ({ children }) => {
 };
 
 export default DotMenu;
+
+DotMenu.propTypes = {
+  children: PropTypes.node.isRequired
+};
+
+MenuItem.propTypes = {
+  icon: PropTypes.node,
+  children: PropTypes.node
+};
