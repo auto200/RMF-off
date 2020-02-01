@@ -27,7 +27,7 @@ const MenuDots = styled.div`
     background-color: inherit;
   }
   ::before {
-    top: 20px;
+    bottom: 10px;
   }
   ::after {
     bottom: -5px;
