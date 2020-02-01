@@ -6,7 +6,7 @@ import Tails from "./components/Tails";
 import Player from "./components/Player";
 import socketIO from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
-import { headerHeight } from "./utils/constants";
+import { headerHeight, playerHeight } from "./utils/constants";
 
 const GlobalStyle = createGlobalStyle`
   html, body{
@@ -17,6 +17,7 @@ const GlobalStyle = createGlobalStyle`
     transition: color, 0.3s, background-color 0.3s;
     #root{
       margin-top: ${headerHeight + "px"};
+      margin-bottom: ${playerHeight + "px"};
     }
 
     *,*::before,*::after{
