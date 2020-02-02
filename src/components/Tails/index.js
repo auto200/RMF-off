@@ -25,26 +25,34 @@ const Tails = ({ tails, wideGridLayout }) => {
   } = usePlayer();
   return (
     <Wrapper wideGridLayout={wideGridLayout}>
-      {tails.map(({ id, stationName, cover, songName, artist, streamURL }) => {
-        const defaultCover =
-          "https://banner2.cleanpng.com/20180501/yxq/kisspng-t-shirt-twitch-emote-youtube-pepe-the-frog-on-saturday-5ae91f46dde8a4.441902551525227334909.jpg";
-        return (
-          <Tail
-            key={`radio${id}`}
-            stationName={stationName}
-            cover={cover}
-            songName={songName}
-            artist={artist}
-            defaultCover={defaultCover}
-            streamURL={streamURL}
-            //player props
-            id={id}
-            isActive={currentStationId === id}
-            handleActionButtonClick={handleActionButtonClick}
-            playerState={playerState}
-          ></Tail>
-        );
-      })}
+      {tails.map(
+        ({
+          id,
+          stationName,
+          cover,
+          songName,
+          artist,
+          streamURL,
+          defaultCover
+        }) => {
+          return (
+            <Tail
+              key={`radio${id}`}
+              stationName={stationName}
+              cover={cover}
+              songName={songName}
+              artist={artist}
+              defaultCover={defaultCover}
+              streamURL={streamURL}
+              //player props
+              id={id}
+              isActive={currentStationId === id}
+              handleActionButtonClick={handleActionButtonClick}
+              playerState={playerState}
+            ></Tail>
+          );
+        }
+      )}
     </Wrapper>
   );
 };
@@ -59,7 +67,8 @@ Tails.propTypes = {
       streamURL: PropTypes.string,
       artist: PropTypes.string,
       songName: PropTypes.string,
-      cover: PropTypes.string
+      cover: PropTypes.string,
+      defaultCover: PropTypes.string
     })
   ),
   wideGridLayout: PropTypes.bool
