@@ -1,6 +1,7 @@
 const axios = require("axios");
 const app = require("express")();
 const cors = require("cors");
+const decode = require("ent/decode");
 const socketIO = require("socket.io");
 
 let tails = [];
@@ -72,8 +73,8 @@ async function getRecentData(initialStationInfo) {
   return initialStationInfo.map(({ id, ...rest }) => ({
     id,
     ...rest,
-    artist: data[`radio${id}`].name,
-    songName: data[`radio${id}`].utwor,
+    artist: decode(data[`radio${id}`].name),
+    songName: decode(data[`radio${id}`].utwor),
     cover: data[`radio${id}`].coverBigUrl
   }));
 }
