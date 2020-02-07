@@ -62,7 +62,7 @@ const App = () => {
       try {
         const {
           data: { stations }
-        } = await axios.get("http://rmfon.pl/json/app.txt");
+        } = await axios.get("https://rmfon.pl/json/app.txt");
         const info = stations.map(station => ({
           id: station.id + "",
           stationName: station.name,
