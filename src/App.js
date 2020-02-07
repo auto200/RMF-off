@@ -118,7 +118,7 @@ const App = () => {
           const tailsData = initialStationInfo.map(({ id, ...rest }) => ({
             id,
             ...rest,
-            artist: decode(data[`radio${id}`].name),
+            artist: decode(data[`radio${id}`].name) || "reklamy / wiadomości",
             songName: decode(data[`radio${id}`].utwor),
             cover: data[`radio${id}`].coverBigUrl
           }));
