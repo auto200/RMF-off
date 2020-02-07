@@ -117,7 +117,6 @@ const Tail = memo(
         "_blank"
       );
     };
-    const trackData = songName && artist;
 
     return (
       <Wrapper>
@@ -142,14 +141,8 @@ const Tail = memo(
           </CoverContainer>
         </AnimatePresence>
         <TrackInfo>
-          {trackData ? (
-            <>
-              <h2 style={{ color: isActive && "red" }}>{songName}</h2>
-              <h3>{artist}</h3>
-            </>
-          ) : (
-            <h1>reklamy / wiadomości</h1>
-          )}
+          <h2 style={{ color: isActive && "red" }}>{songName}</h2>
+          <h3>{artist}</h3>
         </TrackInfo>
         <MenuButtonContainer>
           <DotMenu>
