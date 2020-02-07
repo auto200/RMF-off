@@ -11,7 +11,7 @@ import useDebounce from "../../utils/hooks/useDebounce";
 
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 25% 12% 33% 15% 15%;
+  grid-template-columns: 20% 12% 33% 15% 20%;
   grid-template-rows: 100%;
   align-items: center;
   padding: 5px;
@@ -53,6 +53,7 @@ const AudioSettingsContainer = styled.div`
   display: grid;
   place-items: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 `;
 const VolumeSliderContainer = styled.div`
   position: absolute;
@@ -96,6 +97,7 @@ const ActionButtonWrapper = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 `;
 const AudioIcon = ({ volume }) => {
   if (volume === 0) return <FaVolumeMute />;

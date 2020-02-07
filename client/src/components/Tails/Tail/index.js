@@ -33,6 +33,7 @@ const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
   height: 300px;
   background-position: center;
   background-size: cover;
+  -webkit-tap-highlight-color: transparent;
 
   /* brightness filter */
   &::before {
