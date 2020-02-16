@@ -8,12 +8,13 @@ import axios from "axios";
 import { decode } from "ent";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight, playerHeight } from "./utils/constants";
+import "typeface-quicksand";
 
 const GlobalStyle = createGlobalStyle`
   html, body{
     margin: 0;
     padding: 0;
-    font-family: consolas;
+    font-family: Quicksand, consolas;
     background-color: ${({ theme }) => theme.colors.primary};
     transition: color, 0.3s, background-color 0.3s;
     #root{
