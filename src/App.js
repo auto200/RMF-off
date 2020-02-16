@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import { lightTheme, darkTheme } from "./utils/themes";
 import Header from "./components/Header";
 import Tails from "./components/Tails";
 import Player from "./components/Player";
-import socketIO from "socket.io-client";
+import axios from "axios";
+import { decode } from "ent";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight, playerHeight } from "./utils/constants";
+import "typeface-quicksand";
 
 const GlobalStyle = createGlobalStyle`
   html, body{
     margin: 0;
     padding: 0;
-    font-family: consolas;
+    font-family: Quicksand, consolas;
     background-color: ${({ theme }) => theme.colors.primary};
     transition: color, 0.3s, background-color 0.3s;
     #root{
@@ -25,6 +27,9 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
+const StyledErrorMessage = styled.div`
+  color: ${({ theme }) => theme.colors.highlightText};
+`;
 
 const filterTypes = {
   stationName: "Nazwa stacji",
@@ -32,9 +37,17 @@ const filterTypes = {
   songName: "Nazwa piosenki"
 };
 
-const socket = socketIO("http://192.168.0.103:3000");
+const sleep = async time => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+};
 
 const App = () => {
+  const [initialStationInfo, setInitialStationInfo] = useState([]);
+  const [error, setError] = useState("");
   const [darkMode, setDarkMode] = useState(true);
   const [allTails, setAllTails] = useState([]);
   window.tails = allTails;
@@ -46,22 +59,28 @@ const App = () => {
   const [wideGridLayout, setWideGridLayout] = useState(true);
 
   useEffect(() => {
-    socket.on("initialData", data => {
-      setAllTails(data);
-    });
-    socket.on("dataUpdate", data => {
-      setAllTails(prev => {
-        const newTails = prev.map(tail => {
-          const modifiedTail = data.find(obj => obj.id === tail.id);
-          if (modifiedTail) {
-            return { ...tail, ...modifiedTail };
-          }
-          return tail;
-        });
-        return newTails;
-      });
-    });
+    const getInitialStationInfo = async () => {
+      try {
+        const {
+          data: { stations }
+        } = await axios.get("https://rmfon.pl/json/app.txt");
+        const info = stations.map(station => ({
+          id: station.id + "",
+          stationName: station.name,
+          streamURL: station.mp3,
+          defaultCover: station.defaultart
+        }));
+        setInitialStationInfo(info);
+      } catch (err) {
+        setError(
+          "Nie udało się pobrać podstawowych informacji, spróbuj odświerzyć stronę..."
+        );
+      }
+    };
 
+    getInitialStationInfo();
+
+    // loading themes from localstorage
     try {
       const savedDarkMode = JSON.parse(window.localStorage.getItem("darkMode"));
       if (savedDarkMode === null) {
@@ -86,6 +105,31 @@ const App = () => {
       setWideGridLayout(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!initialStationInfo.length) return;
+
+    const getRecentData = async () => {
+      while (true) {
+        try {
+          const { data } = await axios.get(
+            "https://www.rmfon.pl/stacje/ajax_playing_main.txt"
+          );
+          delete data.generate;
+          const tailsData = initialStationInfo.map(({ id, ...rest }) => ({
+            id,
+            ...rest,
+            artist: decode(data[`radio${id}`].name) || "reklamy / wiadomości",
+            songName: decode(data[`radio${id}`].utwor),
+            cover: data[`radio${id}`].coverBigUrl
+          }));
+          setAllTails(tailsData);
+          await sleep(15000);
+        } catch (err) {}
+      }
+    };
+    getRecentData();
+  }, [initialStationInfo]);
 
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
@@ -122,10 +166,14 @@ const App = () => {
           wideGridLayout={wideGridLayout}
           toggleGridLayout={toggleGridLayout}
         />
-        <PlayerContext>
-          <Tails tails={filtredTails} wideGridLayout={wideGridLayout} />
-          <Player />
-        </PlayerContext>
+        {error ? (
+          <StyledErrorMessage>{error}</StyledErrorMessage>
+        ) : (
+          <PlayerContext>
+            <Tails tails={filtredTails} wideGridLayout={wideGridLayout} />
+            <Player />
+          </PlayerContext>
+        )}
       </>
     </ThemeProvider>
   );
