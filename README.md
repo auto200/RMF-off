@@ -8,10 +8,6 @@ Browse and listen to all RMF stations in one place.
 
 Written in [React](https://reactjs.org/) with data from [https://www.rmfon.pl/](https://www.rmfon.pl/)
 
-## Prerequisites
-
-Written and tested on [Node.js](https://nodejs.org) version 12.16.3
-
 ## Setup
 
 Get the code by either cloning this repository using git
