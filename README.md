@@ -2,6 +2,8 @@
 
 DEMO 👉 https://radio.auto200.eu/
 
+<img src="preview.gif" alt="preview" width="450px">
+
 Browse and listen to all RMF stations in one place.
 
 Written in [React](https://reactjs.org/) with data from [https://www.rmfon.pl/](https://www.rmfon.pl/)
