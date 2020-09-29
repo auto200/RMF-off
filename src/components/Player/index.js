@@ -64,13 +64,15 @@ const VolumeSliderContainer = styled.div`
   place-items: center;
   background-color: ${({ theme }) => theme.colors.primary};
   border: 1px solid ${({ theme }) => theme.colors.regularText};
-  transform: translateY(15%) scale(0);
+  transform: translateY(${({ show }) => (show ? 0 : "15%")})
+    scale(${({ show }) => (show ? 1 : 0)});
   transform-origin: bottom;
   transition: transform 0.5s ease;
 
   ${AudioSettingsContainer}:hover & {
     transform: translateY(0) scale(1);
   }
+
   /*overriting imported slider styles */
   .rangeslider {
     margin: 0;
@@ -110,9 +112,10 @@ const Player = () => {
     station: { stationName, cover, songName, artist, streamURL },
     playerState,
     setPlayerState,
-    handleActionButtonClick
+    handleActionButtonClick,
   } = usePlayer();
   const [volume, setVolume] = useState(50);
+  const [showSlider, setShowSlider] = useState(false);
 
   const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef(null);
@@ -151,11 +154,13 @@ const Player = () => {
       </TrackInfoContainer>
       <AudioSettingsContainer>
         <AudioIcon volume={volume} />
-        <VolumeSliderContainer>
+        <VolumeSliderContainer show={showSlider}>
           <Slider
             orientation="vertical"
+            onChangeStart={() => setShowSlider(true)}
+            onChangeComplete={() => setShowSlider(false)}
             value={volume}
-            onChange={val => setVolume(val)}
+            onChange={(val) => setVolume(val)}
             tooltip={false}
           />
         </VolumeSliderContainer>
