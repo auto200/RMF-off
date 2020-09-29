@@ -13,7 +13,10 @@ const Wrapper = styled.div`
   align-items: center;
   padding: 5px;
   text-align: center;
-  border: 2px solid ${({ theme }) => theme.colors.secondary};
+  border: 2px solid
+    ${({ theme, active }) =>
+      active ? theme.colors.highlightText : theme.colors.secondary};
+  transition: border 1s ease-in-out;
 `;
 const Title = styled.h1`
   font-size: 2rem;
@@ -25,8 +28,8 @@ const Title = styled.h1`
 `;
 const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
   style: {
-    backgroundImage: `url(${cover}), url(${defaultCover})`
-  }
+    backgroundImage: `url(${cover}), url(${defaultCover})`,
+  },
 }))`
   position: relative;
   font-size: 70px;
@@ -92,7 +95,7 @@ const Tail = ({
   id,
   isActive,
   handleActionButtonClick,
-  playerState
+  playerState,
 }) => {
   const handleClick = () => {
     if (isActive) {
@@ -104,7 +107,7 @@ const Tail = ({
         cover: cover || defaultCover,
         songName,
         artist,
-        streamURL
+        streamURL,
       });
     }
   };
@@ -120,7 +123,7 @@ const Tail = ({
   };
 
   return (
-    <Wrapper>
+    <Wrapper active={isActive}>
       <Title>{stationName}</Title>
       <AnimatePresence exitBeforeEnter>
         <CoverContainer
@@ -172,5 +175,5 @@ Tail.propTypes = {
   id: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired,
   handleActionButtonClick: PropTypes.func.isRequired,
-  playerState: PropTypes.string.isRequired
+  playerState: PropTypes.string.isRequired,
 };
