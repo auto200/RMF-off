@@ -34,14 +34,12 @@ const StyledErrorMessage = styled.div`
 const filterTypes = {
   stationName: "Nazwa stacji",
   artist: "Wykonawca",
-  songName: "Nazwa piosenki"
+  songName: "Nazwa piosenki",
 };
 
-const sleep = async time => {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, time);
+const sleep = (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
   });
 };
 
@@ -54,7 +52,7 @@ const App = () => {
   const [filtredTails, setFiltredTails] = useState([]);
   const [[currentFilterType, filterValue], setFilter] = useState([
     "stationName",
-    ""
+    "",
   ]);
   const [wideGridLayout, setWideGridLayout] = useState(true);
 
@@ -62,13 +60,13 @@ const App = () => {
     const getInitialStationInfo = async () => {
       try {
         const {
-          data: { stations }
+          data: { stations },
         } = await axios.get("https://rmfon.pl/json/app.txt");
-        const info = stations.map(station => ({
+        const info = stations.map((station) => ({
           id: station.id + "",
           stationName: station.name,
           streamURL: station.mp3,
-          defaultCover: station.defaultart
+          defaultCover: station.defaultart,
         }));
         setInitialStationInfo(info);
       } catch (err) {
@@ -121,11 +119,11 @@ const App = () => {
             ...rest,
             artist: decode(data[`radio${id}`].name) || "reklamy / wiadomości",
             songName: decode(data[`radio${id}`].utwor),
-            cover: data[`radio${id}`].coverBigUrl
+            cover: data[`radio${id}`].coverBigUrl,
           }));
           setAllTails(tailsData);
-          await sleep(15000);
         } catch (err) {}
+        await sleep(15000);
       }
     };
     getRecentData();
@@ -134,20 +132,20 @@ const App = () => {
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();
     setFiltredTails(() =>
-      allTails.filter(tail =>
+      allTails.filter((tail) =>
         tail[currentFilterType].toLowerCase().includes(filterVal)
       )
     );
   }, [allTails, filterValue, currentFilterType]);
 
   const toggleDarkMode = () =>
-    setDarkMode(prev => {
+    setDarkMode((prev) => {
       localStorage.setItem("darkMode", !prev);
       return !prev;
     });
 
   const toggleGridLayout = () =>
-    setWideGridLayout(prev => {
+    setWideGridLayout((prev) => {
       localStorage.setItem("wideGridLayout", !prev);
       return !prev;
     });
