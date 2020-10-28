@@ -1,8 +1,5 @@
 # RMF OFF
 
-ISSUE:
-endpoint https://www.rmfon.pl/stacje/ajax_playing_main.txt is now covered by cors policy. gonna back to client/server websocket connection soon
-
 DEMO 👉 https://RMFoff.auto200.eu/
 
 <img src="preview.gif" alt="preview" width="450px">
