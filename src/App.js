@@ -4,8 +4,7 @@ import { lightTheme, darkTheme } from "./utils/themes";
 import Header from "./components/Header";
 import Tails from "./components/Tails";
 import Player from "./components/Player";
-import axios from "axios";
-import { decode } from "ent";
+import socketIO from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight, playerHeight } from "./utils/constants";
 import "typeface-quicksand";
@@ -28,7 +27,9 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 const StyledErrorMessage = styled.div`
+  font-size: 2.5rem;
   color: ${({ theme }) => theme.colors.highlightText};
+  text-align: center;
 `;
 
 const filterTypes = {
@@ -37,14 +38,12 @@ const filterTypes = {
   songName: "Nazwa piosenki",
 };
 
-const sleep = (time) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, time);
-  });
-};
-
+const SOCKET_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : "https://rmfoff.auto200.eu";
+const socket = socketIO(SOCKET_URL);
 const App = () => {
-  const [initialStationInfo, setInitialStationInfo] = useState([]);
   const [error, setError] = useState("");
   const [darkMode, setDarkMode] = useState(true);
   const [allTails, setAllTails] = useState([]);
@@ -55,28 +54,27 @@ const App = () => {
     "",
   ]);
   const [wideGridLayout, setWideGridLayout] = useState(true);
-
   useEffect(() => {
-    const getInitialStationInfo = async () => {
-      try {
-        const {
-          data: { stations },
-        } = await axios.get("https://rmfon.pl/json/app.txt");
-        const info = stations.map((station) => ({
-          id: station.id + "",
-          stationName: station.name,
-          streamURL: station.mp3,
-          defaultCover: station.defaultart,
-        }));
-        setInitialStationInfo(info);
-      } catch (err) {
-        setError(
-          "Nie udało się pobrać podstawowych informacji, spróbuj odświerzyć stronę..."
-        );
-      }
-    };
+    socket.on("initialData", (data) => {
+      setAllTails(data);
+    });
 
-    getInitialStationInfo();
+    socket.on("dataUpdate", (data) => {
+      setAllTails((prev) => {
+        const newTails = prev.map((tail) => {
+          const modifiedTail = data.find((obj) => obj.id === tail.id);
+          if (modifiedTail) {
+            return { ...tail, ...modifiedTail };
+          }
+          return tail;
+        });
+        return newTails;
+      });
+    });
+
+    socket.on("error", (msg) => {
+      setError(msg);
+    });
 
     // loading themes from localstorage
     try {
@@ -103,31 +101,6 @@ const App = () => {
       setWideGridLayout(true);
     }
   }, []);
-
-  useEffect(() => {
-    if (!initialStationInfo.length) return;
-
-    const getRecentData = async () => {
-      while (true) {
-        try {
-          const { data } = await axios.get(
-            "https://www.rmfon.pl/stacje/ajax_playing_main.txt"
-          );
-          delete data.generate;
-          const tailsData = initialStationInfo.map(({ id, ...rest }) => ({
-            id,
-            ...rest,
-            artist: decode(data[`radio${id}`].name) || "reklamy / wiadomości",
-            songName: decode(data[`radio${id}`].utwor),
-            cover: data[`radio${id}`].coverBigUrl,
-          }));
-          setAllTails(tailsData);
-        } catch (err) {}
-        await sleep(15000);
-      }
-    };
-    getRecentData();
-  }, [initialStationInfo]);
 
   useEffect(() => {
     const filterVal = filterValue.toLowerCase();

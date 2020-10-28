@@ -21,7 +21,7 @@ const Tails = ({ tails, wideGridLayout }) => {
   const {
     currentStationId,
     playerState,
-    handleActionButtonClick
+    handleActionButtonClick,
   } = usePlayer();
   return (
     <Wrapper wideGridLayout={wideGridLayout}>
@@ -33,7 +33,7 @@ const Tails = ({ tails, wideGridLayout }) => {
           songName,
           artist,
           streamURL,
-          defaultCover
+          defaultCover,
         }) => {
           return (
             <Tail
@@ -68,8 +68,8 @@ Tails.propTypes = {
       artist: PropTypes.string,
       songName: PropTypes.string,
       cover: PropTypes.string,
-      defaultCover: PropTypes.string
+      defaultCover: PropTypes.string,
     })
   ),
-  wideGridLayout: PropTypes.bool
+  wideGridLayout: PropTypes.bool,
 };
