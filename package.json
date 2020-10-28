@@ -1,41 +1,21 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "framer-motion": "^1.11.1",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-icons": "^3.11.0",
-    "react-rangeslider": "^2.2.0",
-    "react-scripts": "3.3.0",
-    "socket.io-client": "^2.3.1",
-    "styled-components": "^5.2.0",
-    "typeface-quicksand": "^1.1.13"
+  "name": "RMF-off",
+  "version": "1.0.0",
+  "description": "ISSUE:\r endpoint https://www.rmfon.pl/stacje/ajax_playing_main.txt is now covered by cors policy. gonna back to client/server websocket connection soon",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "shelljs": "^0.8.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "client": "cd client && npm start",
+    "server": "cd server && npm start",
+    "install:all": "cd server && npm ci && cd ../client && npm ci",
+    "start": "npm-run-all --parallel client server",
+    "build:client": "cd client && npm run build"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {}
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
