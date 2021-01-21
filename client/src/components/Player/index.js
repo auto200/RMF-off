@@ -1,110 +1,31 @@
 import React, { useRef, useEffect, useState } from "react";
-import styled from "styled-components";
 import { usePlayer } from "../../contexts/PlayerContext";
 import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { playerHeight } from "../../utils/constants";
 import PlayerStateIcon from "../PlayerStateIcon";
 import { playerStates } from "../../contexts/PlayerContext";
-import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
 import useDebounce from "../../utils/hooks/useDebounce";
+import { Image, Box, Text, Flex, Progress } from "@chakra-ui/react";
+import { Fade } from "@chakra-ui/react";
+import {
+  Slider,
+  SliderTrack,
+  SliderFilledTrack,
+  SliderThumb,
+} from "@chakra-ui/react";
+import { isMobile } from "react-device-detect";
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 20% 12% 33% 15% 20%;
-  grid-template-rows: 100%;
-  align-items: center;
-  padding: 5px;
-  grid-gap: 5px;
-  height: ${playerHeight + "px"};
-  position: fixed;
-  z-index: 10;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%)
-    ${({ isShown }) =>
-      isShown ? `translateY(0)` : `translateY(${playerHeight + "px"})`};
-  transition: transform 1s ease;
-  background-color: ${({ theme }) => theme.colors.secondary};
-  width: 100%;
-  max-width: 500px;
-  border-top: 1px solid ${({ theme }) => theme.colors.regularText};
-  padding: 0 15px;
-`;
-const Field = styled.div`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  color: ${({ theme, highlight }) =>
-    highlight ? theme.colors.highlightText : theme.colors.regularText};
-`;
-const Cover = styled.img`
-  max-height: 85%;
-`;
-const TrackInfoContainer = styled.div`
-  overflow: hidden;
-  max-width: 100%;
-`;
-const AudioSettingsContainer = styled.div`
-  position: relative;
-  color: ${({ theme }) => theme.colors.regularText};
-  font-size: 35px;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-`;
-const VolumeSliderContainer = styled.div`
-  position: absolute;
-  bottom: ${playerHeight - 15 + "px"};
-  z-index: 20;
-  width: 35px;
-  display: grid;
-  place-items: center;
-  background-color: ${({ theme }) => theme.colors.primary};
-  border: 1px solid ${({ theme }) => theme.colors.regularText};
-  transform: translateY(${({ show }) => (show ? 0 : "15%")})
-    scale(${({ show }) => (show ? 1 : 0)});
-  transform-origin: bottom;
-  transition: transform 0.5s ease;
-
-  ${AudioSettingsContainer}:hover & {
-    transform: translateY(0) scale(1);
-  }
-
-  /*overriting imported slider styles */
-  .rangeslider {
-    margin: 0;
-    background-color: ${({ theme }) => theme.colors.secondary};
-  }
-  .rangeslider__fill {
-    background-color: ${({ theme }) => theme.colors.highlightText};
-  }
-  .rangeslider__labels {
-    visibility: hidden;
-  }
-  .rangeslider__handle {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    left: -5px;
-    border-color: ${({ theme }) => theme.colors.secondary};
-  }
-`;
-const ActionButtonWrapper = styled.div`
-  color: ${({ theme }) => theme.colors.regularText};
-  font-size: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-`;
 const AudioIcon = ({ volume }) => {
-  if (volume === 0) return <FaVolumeMute />;
-  if (volume > 0 && volume < 51) return <FaVolumeDown />;
-  return <FaVolumeUp />;
+  let Icon;
+  if (volume === 0) {
+    Icon = <FaVolumeMute />;
+  } else if (volume > 0 && volume < 51) {
+    Icon = <FaVolumeDown />;
+  } else {
+    Icon = <FaVolumeUp />;
+  }
+  return Icon;
 };
 
 const Player = () => {
@@ -115,7 +36,6 @@ const Player = () => {
     handleActionButtonClick,
   } = usePlayer();
   const [volume, setVolume] = useState(50);
-  const [showSlider, setShowSlider] = useState(false);
 
   const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef(null);
@@ -129,7 +49,7 @@ const Player = () => {
 
   useEffect(() => {
     //idk it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
-    audioRef.current.volume = volume / 550;
+    audioRef.current.volume = volume / 1000;
   }, [volume]);
 
   useEffect(() => {
@@ -145,40 +65,89 @@ const Player = () => {
   }, [playerState]);
 
   return (
-    <Wrapper isShown={stationName}>
-      <Field>{stationName}</Field>
-      <Cover src={cover} />
-      <TrackInfoContainer>
-        <Field highlight>{songName}</Field>
-        <Field>{artist}</Field>
-      </TrackInfoContainer>
-      <AudioSettingsContainer>
-        <AudioIcon volume={volume} />
-        <VolumeSliderContainer show={showSlider}>
-          <Slider
-            orientation="vertical"
-            onChangeStart={() => setShowSlider(true)}
-            onChangeComplete={() => setShowSlider(false)}
-            value={volume}
-            onChange={(val) => setVolume(val)}
-            tooltip={false}
-          />
-        </VolumeSliderContainer>
-      </AudioSettingsContainer>
-      <ActionButtonWrapper onClick={() => handleActionButtonClick()}>
-        <PlayerStateIcon playerState={playerState} />
-      </ActionButtonWrapper>
-      <audio
-        src={streamURL}
-        ref={audioRef}
-        onLoadStart={() => setPlayerState(playerStates.LOADING)}
-        onCanPlay={() => {
-          audioRef.current.play();
-        }}
-        onPause={() => setPlayerState(playerStates.PAUSED)}
-        onPlaying={() => setPlayerState(playerStates.PLAYING)}
-      />
-    </Wrapper>
+    <Fade in={!!stationName}>
+      <Flex
+        pos="fixed"
+        left="50%"
+        transform="translateX(-50%)"
+        h={playerHeight + "px"}
+        w="full"
+        maxW={["full", "xl"]}
+        bottom="0"
+        bg="gray.700"
+        align="center"
+        color="gray.50"
+      >
+        <Progress
+          pos="absolute"
+          top={-1}
+          w="full"
+          size="xs"
+          hasStripe
+          isAnimated={playerState === playerStates.PLAYING}
+          value={100}
+        />
+        <Image src={cover} boxSize={playerHeight + "px"} fit="cover" />
+        <Box px={2} isTruncated flex="1">
+          <Text
+            my={1}
+            m={0}
+            fontWeight="bold"
+            fontSize="xl"
+            color="gray.200"
+            isTruncated
+          >
+            {songName}
+          </Text>
+          <Text
+            my={1}
+            m={0}
+            fontWeight="bold"
+            fontSize="sm"
+            color="gray.500"
+            isTruncated
+          >
+            {artist}
+          </Text>
+        </Box>
+
+        {!isMobile && (
+          <Flex fontSize="3xl" ml="auto">
+            <AudioIcon volume={volume} />
+            <Slider
+              ml={3}
+              value={volume}
+              onChange={(val) => setVolume(val)}
+              w="100px"
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
+          </Flex>
+        )}
+
+        <PlayerStateIcon
+          mx={[3, 5]}
+          p={1}
+          fontSize="3xl"
+          playerState={playerState}
+          onClick={() => handleActionButtonClick()}
+        />
+
+        <audio
+          src={streamURL}
+          ref={audioRef}
+          onLoadStart={() => setPlayerState(playerStates.LOADING)}
+          onCanPlay={() => {
+            audioRef.current.play();
+          }}
+          onPause={() => setPlayerState(playerStates.PAUSED)}
+          onPlaying={() => setPlayerState(playerStates.PLAYING)}
+        />
+      </Flex>
+    </Fade>
   );
 };
 

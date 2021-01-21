@@ -1,34 +1,32 @@
 import React from "react";
-import styled from "styled-components";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { AiOutlineLoading } from "react-icons/ai";
 import { playerStates } from "../../contexts/PlayerContext";
 import PropTypes from "prop-types";
+import { IconButton, Icon, keyframes } from "@chakra-ui/react";
 
-const LoadingButton = styled(AiOutlineLoading)`
-  animation: rotate 2s linear infinite;
-
-  @keyframes rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
+const spin = keyframes`
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
 `;
-const PlayerStateIcon = ({ playerState, ...props }) => {
-  let Button;
+const PlayerStateIcon = ({ playerState, icon, ...props }) => {
+  const icons = {
+    [playerStates.PAUSED]: <FaPlay />,
+    [playerStates.PLAYING]: <FaPause />,
+    [playerStates.LOADING]: (
+      <Icon as={AiOutlineLoading} animation={`${spin} 2s linear infinite`} />
+    ),
+  };
 
-  if (playerState === playerStates.PAUSED) {
-    Button = FaPlay;
-  } else if (playerState === playerStates.PLAYING) {
-    Button = FaPause;
-  } else if (playerState === playerStates.LOADING) {
-    Button = LoadingButton;
-  }
-
-  return <Button {...props} />;
+  return (
+    <IconButton
+      icon={icon || icons[playerState]}
+      bg="transparent"
+      _hover={{ bg: "transparent" }}
+      _active={{ bg: "transparent" }}
+      {...props}
+    />
+  );
 };
 
 export default PlayerStateIcon;
@@ -37,6 +35,6 @@ PlayerStateIcon.propTypes = {
   playerState: PropTypes.oneOf([
     playerStates.PLAYING,
     playerStates.LOADING,
-    playerStates.PAUSED
-  ]).isRequired
+    playerStates.PAUSED,
+  ]).isRequired,
 };

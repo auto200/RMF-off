@@ -1,95 +1,32 @@
 import React from "react";
-import styled from "styled-components";
 import PlayerStateIcon from "../../PlayerStateIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
-import DotMenu, { MenuItem } from "./DotsMenu";
 import PropTypes from "prop-types";
+import {
+  Box,
+  chakra,
+  Flex,
+  Heading,
+  IconButton,
+  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { useInView } from "react-intersection-observer";
+import { BiDotsVerticalRounded, BiLinkExternal } from "react-icons/bi";
 
-const Wrapper = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px;
-  text-align: center;
-  border: 2px solid
-    ${({ theme, active }) =>
-      active ? theme.colors.highlightText : theme.colors.secondary};
-  transition: border 1s ease-in-out;
-`;
-const Title = styled.h1`
-  font-size: 2rem;
-  font-weight: bold;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  color: ${({ theme }) => theme.colors.highlightText};
-`;
-const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
-  style: {
-    backgroundImage: `url(${cover}), url(${defaultCover})`,
-  },
-}))`
-  position: relative;
-  font-size: 70px;
-  cursor: pointer;
-  width: 95%;
-  height: 300px;
-  background-position: center;
-  background-size: cover;
-  -webkit-tap-highlight-color: transparent;
+const CoverContainer = chakra(motion.div);
 
-  /* brightness filter */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, ${({ theme }) => theme.imgBrightness});
-    transition: background-color 0.3s;
-  }
-`;
-
-const ActionButtonWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  opacity: ${({ isActive }) => (isActive ? 0.7 : 0)};
-  transition: opacity 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme }) => theme.colors.white};
-
-  &:hover {
-    opacity: ${({ isActive }) => !isActive && 0.7};
-  }
-`;
-const TrackInfo = styled.div`
-  color: ${({ theme }) => theme.colors.regularText};
-  width: 100%;
-  display: grid;
-  place-items: center;
-  width: calc(100% - 55px);
-
-  h3 {
-    margin: 0;
-    font-weight: normal;
-  }
-`;
-const MenuButtonContainer = styled.div`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-`;
 const Tail = ({
   stationName,
   cover,
   songName,
   artist,
-  defaultCover,
   streamURL,
   //player props
   id,
@@ -97,68 +34,148 @@ const Tail = ({
   handleActionButtonClick,
   playerState,
 }) => {
-  const handleClick = () => {
+  const { ref, inView } = useInView();
+  const activeTailBackground = useColorModeValue("gray.50", "gray.900");
+
+  const handleCoverClick = () => {
     if (isActive) {
       handleActionButtonClick(null, true);
     } else {
       handleActionButtonClick({
         id,
         stationName,
-        cover: cover || defaultCover,
+        cover,
         songName,
         artist,
         streamURL,
       });
     }
   };
+
   const query = encodeURIComponent(`${artist} - ${songName}`);
-  const handleGoogleSearch = () => {
-    window.open(`https://www.google.com/search?q=${query}`, "_blank");
-  };
-  const handleYoutubeSearch = () => {
-    window.open(
-      `https://www.youtube.com/results?search_query=${query}`,
-      "_blank"
-    );
-  };
 
   return (
-    <Wrapper active={isActive}>
-      <Title>{stationName}</Title>
+    <Flex
+      maxW="500px"
+      pos="relative"
+      flexDir="column"
+      alignItems="center"
+      p={1}
+      // m={5}
+      outline={`${isActive ? 4 : 2}px solid`}
+      outlineColor={isActive ? "red.400" : "blue.600"}
+      bg={isActive && activeTailBackground}
+      transition="background 0.5s"
+      ref={ref}
+    >
+      <Heading
+        isTruncated
+        color="blue.600"
+        maxW="95%"
+        title={stationName}
+        mb={1}
+        style={{ opacity: 1 }}
+      >
+        {stationName}
+      </Heading>
       <AnimatePresence exitBeforeEnter>
         <CoverContainer
-          cover={cover}
-          defaultCover={defaultCover}
-          onClick={handleClick}
+          w="full"
+          h="300px"
+          pos="relative"
+          bgPos="center"
+          bgSize="cover"
+          //brightness filter
+          css={{
+            backgroundImage: inView && `url(${cover})`,
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: `rgba(0, 0, 0, ${useColorModeValue(0, 0.3)})`,
+              transition: "background-color 0.3s",
+            },
+          }}
+          //motion props
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          key={id + songName}
+          key={inView && songName}
         >
-          <ActionButtonWrapper isActive={isActive}>
-            {isActive ? (
-              <PlayerStateIcon playerState={playerState} />
-            ) : (
-              <FaPlay />
-            )}
-          </ActionButtonWrapper>
+          <PlayerStateIcon
+            icon={!isActive && <FaPlay />}
+            onClick={handleCoverClick}
+            playerState={playerState}
+            boxSize="full"
+            fontSize="70px"
+            color="gray.100"
+            opacity={isActive ? 0.7 : 0}
+            _hover={{ cursor: "pointer", opacity: !isActive && 0.7 }}
+            _focus={{ opacity: 0.7 }}
+            transition="opacity 0.3s"
+          />
         </CoverContainer>
       </AnimatePresence>
-      <TrackInfo>
-        <h2 style={{ color: isActive && "red" }}>{songName}</h2>
-        <h3>{artist}</h3>
-      </TrackInfo>
-      <MenuButtonContainer>
-        <DotMenu>
-          <MenuItem icon={<FaGoogle />} onClick={handleGoogleSearch}>
-            Szukaj w Google
-          </MenuItem>
-          <MenuItem icon={<FaYoutube />} onClick={handleYoutubeSearch}>
-            Szukaj w YouTube
-          </MenuItem>
-        </DotMenu>
-      </MenuButtonContainer>
-    </Wrapper>
+      <Flex width="95%">
+        <Box flexGrow="1" isTruncated textAlign="center">
+          <Text
+            fontSize="2xl"
+            color={useColorModeValue("gray.700", "gray.300")}
+            isTruncated
+            py={!artist && 3}
+            title={songName}
+          >
+            {songName}
+          </Text>
+          <Heading
+            as="h3"
+            fontSize="md"
+            color="gray.500"
+            isTruncated
+            title={artist}
+          >
+            {artist}
+          </Heading>
+        </Box>
+        {/* dots menu */}
+        <Menu direction="column" bg="gray.600">
+          <MenuButton
+            as={IconButton}
+            my="auto"
+            aria-label="Menu"
+            icon={<BiDotsVerticalRounded />}
+            isRound={true}
+            fontSize="2xl"
+            bg="transparent"
+          />
+          <MenuList py={0}>
+            <MenuItem
+              as={Link}
+              icon={<FaGoogle />}
+              h="50px"
+              command={<BiLinkExternal />}
+              href={`https://www.google.com/search?q=${query}`}
+              isExternal
+            >
+              Szukaj w Google
+            </MenuItem>
+            <MenuItem
+              as={Link}
+              icon={<FaYoutube />}
+              h="50px"
+              command={<BiLinkExternal />}
+              href={`https://www.youtube.com/results?search_query=${query}`}
+              isExternal
+            >
+              Szukaj w YouTube
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+    </Flex>
   );
 };
 
@@ -169,7 +186,6 @@ Tail.propTypes = {
   cover: PropTypes.string,
   songName: PropTypes.string,
   artist: PropTypes.string,
-  defaultCover: PropTypes.string.isRequired,
   streamURL: PropTypes.string.isRequired,
   //player props
   id: PropTypes.string.isRequired,

@@ -6,6 +6,7 @@ const decode = require("ent/decode");
 const socketIO = require("socket.io");
 
 const app = express();
+
 app.use(express.static(path.join(__dirname, "public")));
 
 let tails = [];
@@ -21,11 +22,16 @@ if ((process.env.ENV = "DEV")) {
   });
 }
 
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 io.on("connect", (socket) => {
   socket.emit("initialData", tails);
 });
+
 const sleep = async (time) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -40,7 +46,6 @@ const sleep = async (time) => {
     console.log("getting initial station infos");
     initialStationInfo = await getInitialStationInfo();
     tails = await getRecentData(initialStationInfo);
-    console.log(tails);
     console.log("startup completed");
     while (true) {
       await sleep(15000);
@@ -89,11 +94,11 @@ async function getRecentData(initialStationInfo) {
     "https://www.rmfon.pl/stacje/ajax_playing_main.txt"
   );
   delete data.generate;
-  return initialStationInfo.map(({ id, ...rest }) => ({
+  return initialStationInfo.map(({ id, defaultCover, ...rest }) => ({
     id,
     ...rest,
+    songName: decode(data[`radio${id}`].utwor) || "Wiadomości/Przerwa",
     artist: decode(data[`radio${id}`].name),
-    songName: decode(data[`radio${id}`].utwor),
-    cover: data[`radio${id}`].coverBigUrl,
+    cover: data[`radio${id}`].coverBigUrl || defaultCover,
   }));
 }

@@ -5,7 +5,7 @@ const PlayerContext = createContext();
 export const playerStates = {
   PAUSED: "PAUSED",
   PLAYING: "PLAYING",
-  LOADING: "LOADING"
+  LOADING: "LOADING",
 };
 
 const PlayerContextProvider = ({ children }) => {
@@ -18,6 +18,7 @@ const PlayerContextProvider = ({ children }) => {
   }, [station]);
 
   const handleActionButtonClick = (station, isActive) => {
+    console.log("called");
     if (station) {
       setStation(station);
     } else {
@@ -38,7 +39,7 @@ const PlayerContextProvider = ({ children }) => {
         currentStationId,
         playerState,
         setPlayerState,
-        handleActionButtonClick
+        handleActionButtonClick,
       }}
     >
       {children}
