@@ -1,7 +1,7 @@
 {
   "name": "RMF-off",
   "version": "1.0.0",
-  "description": "ISSUE:\r endpoint https://www.rmfon.pl/stacje/ajax_playing_main.txt is now covered by cors policy. gonna back to client/server websocket connection soon",
+  "description": "Custom fontend for rmfon api",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
