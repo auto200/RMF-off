@@ -4,17 +4,19 @@ export interface StationBaseInfo {
   streamURL: string;
   cover: string;
 }
+
 interface PlayingSongInfo {
   name?: string;
   utwor?: string;
   cover?: string;
-  coverBig?: string;
+  coverBigUrl?: string;
   artist?: string;
 }
-export interface PlayingStationsInfo {
-  [key: string]: PlayingSongInfo;
+
+export interface Station extends Omit<StationBaseInfo, "cover"> {
+  song: Omit<PlayingSongInfo, "utwor" | "coverBigUrl">;
 }
 
-export interface Station extends StationBaseInfo {
-  song: Omit<PlayingSongInfo, "utwor" | "coverBig">;
+export interface PlayingStationsInfo {
+  [key: string]: PlayingSongInfo;
 }

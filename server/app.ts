@@ -12,7 +12,6 @@ import {
   Station,
 } from "./utils/interfaces";
 import { ENDPOINTS, FETCH_INTERVAL } from "./utils/constants";
-import { SOCKET_EVENTS } from "./shared/SOCKET_EVENTS";
 
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
@@ -32,7 +31,7 @@ const io = new Server(server, {
 let stations: Station[] = [];
 
 io.on("connect", (socket: Socket) => {
-  socket.emit(SOCKET_EVENTS.INITIAL_DATA, stations);
+  socket.emit("INITIAL_DATA", stations);
 });
 
 (async function main() {
@@ -58,7 +57,7 @@ io.on("connect", (socket: Socket) => {
           return songChanged;
         });
 
-        io.emit(SOCKET_EVENTS.DATA_UPDATE, changedStations);
+        io.emit("DATA_UPDATE", changedStations);
         stations = newStationsData;
       } catch (err) {
         await sleep(FETCH_INTERVAL);
@@ -71,7 +70,7 @@ io.on("connect", (socket: Socket) => {
       "Application failed to fetch initial data, no progress will be made"
     );
     io.emit(
-      "error",
+      "ERROR",
       "Wystąpił błąd po stronie serwera, skontaktuj się z administratorem strony"
     );
   }
@@ -107,7 +106,7 @@ function combineBaseAndPlayingStationsInfo(
   baseStationInfo: StationBaseInfo[],
   playingStationInfo: PlayingStationsInfo
 ): Station[] {
-  return baseStationInfo.map(({ id, ...rest }) => ({
+  return baseStationInfo.map(({ id, cover: stationCover, ...rest }) => ({
     id,
     ...rest,
     song: {
@@ -116,9 +115,10 @@ function combineBaseAndPlayingStationsInfo(
       ),
       artist: decode(playingStationInfo[`radio${id}`].name || ""),
       cover:
-        playingStationInfo[`radio${id}`].coverBig ||
+        playingStationInfo[`radio${id}`].coverBigUrl ||
+        playingStationInfo[`radio${id}`].artist ||
         playingStationInfo[`radio${id}`].cover ||
-        playingStationInfo[`radio${id}`].artist,
+        stationCover,
     },
   }));
 }

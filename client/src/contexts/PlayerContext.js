@@ -8,7 +8,7 @@ export const playerStates = {
   LOADING: "LOADING",
 };
 
-const PlayerContextProvider = ({ children }) => {
+const PlayerContextProvider = ({ children, stations }) => {
   const [station, setStation] = useState({});
   const [currentStationId, setCurrentStationId] = useState("");
   const [playerState, setPlayerState] = useState(playerStates.PAUSED);
@@ -17,12 +17,12 @@ const PlayerContextProvider = ({ children }) => {
     if (station.id) setCurrentStationId(station.id);
   }, [station]);
 
-  const handleActionButtonClick = (station, isActive) => {
+  const handleActionButtonClick = (stationId) => {
     console.log("called");
-    if (station) {
+    if (stationId !== currentStationId) {
       setStation(station);
     } else {
-      if (playerState === playerStates.LOADING && isActive) return;
+      // if (playerState === playerStates.LOADING && isActive) return;
 
       if (playerState === playerStates.PLAYING) {
         setPlayerState(playerStates.PAUSED);

@@ -19,41 +19,41 @@ import {
 } from "@chakra-ui/react";
 import { useInView } from "react-intersection-observer";
 import { BiDotsVerticalRounded, BiLinkExternal } from "react-icons/bi";
+import { IStation } from "../../../App";
 
 const CoverContainer = chakra(motion.div);
 
-const Tail = ({
-  stationName,
-  cover,
-  songName,
-  artist,
+const Tail: React.FC<IStation> = ({
+  name,
+  song,
   streamURL,
   //player props
-  id,
-  isActive,
-  handleActionButtonClick,
-  playerState,
+  // id,
+  // isActive,
+  // handleActionButtonClick,
+  // playerState,
 }) => {
-  const { ref, inView } = useInView();
+  // const { ref, inView } = useInView();
   const activeTailBackground = useColorModeValue("gray.50", "gray.900");
 
-  const handleCoverClick = () => {
-    if (isActive) {
-      handleActionButtonClick(null, true);
-    } else {
-      handleActionButtonClick({
-        id,
-        stationName,
-        cover,
-        songName,
-        artist,
-        streamURL,
-      });
-    }
-  };
+  // const handleCoverClick = () => {
+  //   if (isActive) {
+  //     handleActionButtonClick(null, true);
+  //   } else {
+  //     handleActionButtonClick({
+  //       id,
+  //       stationName,
+  //       cover,
+  //       songName,
+  //       artist,
+  //       streamURL,
+  //     });
+  //   }
+  // };
 
-  const query = encodeURIComponent(`${artist} - ${songName}`);
+  const query = encodeURIComponent(`${song.artist} - ${song.name}`);
 
+  const isActive = false; // DELETE ME
   return (
     <Flex
       maxW="500px"
@@ -64,32 +64,34 @@ const Tail = ({
       // m={5}
       outline={`${isActive ? 4 : 2}px solid`}
       outlineColor={isActive ? "red.400" : "blue.600"}
-      bg={isActive && activeTailBackground}
+      // bg={isActive && activeTailBackground}
       transition="background 0.5s"
-      ref={ref}
+      // ref={ref}
     >
       <Heading
         isTruncated
         color="blue.600"
         maxW="95%"
-        title={stationName}
+        title={name}
         mb={1}
         style={{ opacity: 1 }}
       >
-        {stationName}
+        {name}
       </Heading>
       <AnimatePresence exitBeforeEnter>
         <CoverContainer
+          // key={inView && song.name} // TODO: use `cover` as a key
           w="full"
           h="300px"
           pos="relative"
           bgPos="center"
           bgSize="cover"
           //brightness filter
-          css={{
-            backgroundImage: inView && `url(${cover})`,
+          sx={{
+            // backgroundImage: inView ? `url(${cover})` : "",
+            backgroundImage: `url(${song.cover})`,
             "&::before": {
-              content: '""',
+              content: "''",
               position: "absolute",
               top: 0,
               left: 0,
@@ -103,9 +105,8 @@ const Tail = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          key={inView && songName}
         >
-          <PlayerStateIcon
+          {/* <PlayerStateIcon
             icon={!isActive && <FaPlay />}
             onClick={handleCoverClick}
             playerState={playerState}
@@ -116,32 +117,33 @@ const Tail = ({
             _hover={{ cursor: "pointer", opacity: !isActive && 0.7 }}
             _focus={{ opacity: 0.7 }}
             transition="opacity 0.3s"
-          />
+          /> */}
         </CoverContainer>
       </AnimatePresence>
       <Flex width="95%">
-        <Box flexGrow="1" isTruncated textAlign="center">
+        <Box flexGrow={1} isTruncated textAlign="center">
           <Text
             fontSize="2xl"
             color={useColorModeValue("gray.700", "gray.300")}
             isTruncated
-            py={!artist && 3}
-            title={songName}
+            py={!song.artist ? 3 : 0}
+            title={song.name}
           >
-            {songName}
+            {song.name}
           </Text>
           <Heading
             as="h3"
             fontSize="md"
             color="gray.500"
             isTruncated
-            title={artist}
+            title={song.artist}
           >
-            {artist}
+            {song.artist}
           </Heading>
         </Box>
         {/* dots menu */}
-        <Menu direction="column" bg="gray.600">
+        {/* <Menu bg="gray.600" isLazy> */}
+        <Menu isLazy>
           <MenuButton
             as={IconButton}
             my="auto"
@@ -156,7 +158,7 @@ const Tail = ({
               as={Link}
               icon={<FaGoogle />}
               h="50px"
-              command={<BiLinkExternal />}
+              command={((<BiLinkExternal />) as unknown) as string}
               href={`https://www.google.com/search?q=${query}`}
               isExternal
             >
@@ -166,7 +168,7 @@ const Tail = ({
               as={Link}
               icon={<FaYoutube />}
               h="50px"
-              command={<BiLinkExternal />}
+              command={((<BiLinkExternal />) as unknown) as string}
               href={`https://www.youtube.com/results?search_query=${query}`}
               isExternal
             >
@@ -180,16 +182,3 @@ const Tail = ({
 };
 
 export default Tail;
-
-Tail.propTypes = {
-  stationName: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  songName: PropTypes.string,
-  artist: PropTypes.string,
-  streamURL: PropTypes.string.isRequired,
-  //player props
-  id: PropTypes.string.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  handleActionButtonClick: PropTypes.func.isRequired,
-  playerState: PropTypes.string.isRequired,
-};
