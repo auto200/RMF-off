@@ -3,7 +3,7 @@ import { usePlayer } from "../../contexts/PlayerContext";
 import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { playerHeight } from "../../utils/constants";
 import PlayerStateIcon from "../PlayerStateIcon";
-import { playerStates } from "../../contexts/PlayerContext";
+import { PLAYER_STATES } from "../../contexts/PlayerContext";
 import "react-rangeslider/lib/index.css";
 import useDebounce from "../../utils/hooks/useDebounce";
 import { Image, Box, Text, Flex, Progress } from "@chakra-ui/react";
@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { isMobile } from "react-device-detect";
 
-const AudioIcon = ({ volume }) => {
+const AudioIcon: React.FC<{ volume: number }> = ({ volume }) => {
   let Icon;
   if (volume === 0) {
     Icon = <FaVolumeMute />;
@@ -30,18 +30,18 @@ const AudioIcon = ({ volume }) => {
 
 const Player = () => {
   const {
-    station: { stationName, cover, songName, artist, streamURL },
+    currentStation,
     playerState,
     setPlayerState,
-    handleActionButtonClick,
+    togglePlayerState,
   } = usePlayer();
-  const [volume, setVolume] = useState(50);
+  const [volume, setVolume] = useState<number>(50);
 
   const debouncedVolume = useDebounce(volume, 3000);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    const savedVolume = window.localStorage.getItem("volume");
+    const savedVolume = window.localStorage.getItem("volume") as number | null;
     if (savedVolume) {
       setVolume(savedVolume * 1);
     }
@@ -49,23 +49,29 @@ const Player = () => {
 
   useEffect(() => {
     //idk it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
-    audioRef.current.volume = volume / 1000;
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 1000;
+    }
   }, [volume]);
 
   useEffect(() => {
-    window.localStorage.setItem("volume", debouncedVolume);
+    window.localStorage.setItem("volume", debouncedVolume.toString());
   }, [debouncedVolume]);
 
   useEffect(() => {
-    if (playerState === playerStates.PLAYING) {
+    if (!audioRef.current) return;
+
+    if (playerState === PLAYER_STATES.PLAYING) {
       audioRef.current.play();
-    } else if (playerState === playerStates.PAUSED) {
+    } else if (playerState === PLAYER_STATES.PAUSED) {
       audioRef.current.pause();
     }
   }, [playerState]);
 
   return (
-    <Fade in={!!stationName}>
+    // TODO: check for initial station select -- prevent filcering while changing
+    // stations
+    <Fade in={!!currentStation?.name}>
       <Flex
         pos="fixed"
         left="50%"
@@ -84,10 +90,14 @@ const Player = () => {
           w="full"
           size="xs"
           hasStripe
-          isAnimated={playerState === playerStates.PLAYING}
+          isAnimated={playerState === PLAYER_STATES.PLAYING}
           value={100}
         />
-        <Image src={cover} boxSize={playerHeight + "px"} fit="cover" />
+        <Image
+          src={currentStation?.song.cover}
+          boxSize={playerHeight + "px"}
+          fit="cover"
+        />
         <Box px={2} isTruncated flex="1">
           <Text
             my={1}
@@ -97,7 +107,7 @@ const Player = () => {
             color="gray.200"
             isTruncated
           >
-            {songName}
+            {currentStation?.song.name}
           </Text>
           <Text
             my={1}
@@ -107,7 +117,7 @@ const Player = () => {
             color="gray.500"
             isTruncated
           >
-            {artist}
+            {currentStation?.song.artist}
           </Text>
         </Box>
 
@@ -133,18 +143,21 @@ const Player = () => {
           p={1}
           fontSize="3xl"
           playerState={playerState}
-          onClick={() => handleActionButtonClick()}
+          onClick={togglePlayerState}
+          aria-label="asdf"
         />
 
         <audio
-          src={streamURL}
+          src={currentStation?.streamURL}
           ref={audioRef}
-          onLoadStart={() => setPlayerState(playerStates.LOADING)}
+          onLoadStart={() => setPlayerState(PLAYER_STATES.LOADING)}
           onCanPlay={() => {
-            audioRef.current.play();
+            if (audioRef.current) {
+              audioRef.current.play();
+            }
           }}
-          onPause={() => setPlayerState(playerStates.PAUSED)}
-          onPlaying={() => setPlayerState(playerStates.PLAYING)}
+          onPause={() => setPlayerState(PLAYER_STATES.PAUSED)}
+          onPlaying={() => setPlayerState(PLAYER_STATES.PLAYING)}
         />
       </Flex>
     </Fade>

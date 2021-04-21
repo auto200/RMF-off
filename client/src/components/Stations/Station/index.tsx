@@ -20,40 +20,30 @@ import {
 import { useInView } from "react-intersection-observer";
 import { BiDotsVerticalRounded, BiLinkExternal } from "react-icons/bi";
 import { IStation } from "../../../App";
+import { PLAYER_STATES } from "../../../contexts/PlayerContext";
 
 const CoverContainer = chakra(motion.div);
-
-const Tail: React.FC<IStation> = ({
+interface IProps extends IStation {
+  handleCoverClick: () => void;
+  isActive: boolean;
+  playerState: PLAYER_STATES;
+}
+const Tail: React.FC<IProps> = ({
   name,
   song,
   streamURL,
+  playerState,
   //player props
   // id,
-  // isActive,
-  // handleActionButtonClick,
+  isActive,
+  handleCoverClick,
   // playerState,
 }) => {
   // const { ref, inView } = useInView();
   const activeTailBackground = useColorModeValue("gray.50", "gray.900");
 
-  // const handleCoverClick = () => {
-  //   if (isActive) {
-  //     handleActionButtonClick(null, true);
-  //   } else {
-  //     handleActionButtonClick({
-  //       id,
-  //       stationName,
-  //       cover,
-  //       songName,
-  //       artist,
-  //       streamURL,
-  //     });
-  //   }
-  // };
-
   const query = encodeURIComponent(`${song.artist} - ${song.name}`);
 
-  const isActive = false; // DELETE ME
   return (
     <Flex
       maxW="500px"
@@ -106,18 +96,19 @@ const Tail: React.FC<IStation> = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* <PlayerStateIcon
-            icon={!isActive && <FaPlay />}
+          <PlayerStateIcon
+            icon={!isActive ? <FaPlay /> : undefined}
             onClick={handleCoverClick}
             playerState={playerState}
             boxSize="full"
             fontSize="70px"
             color="gray.100"
             opacity={isActive ? 0.7 : 0}
-            _hover={{ cursor: "pointer", opacity: !isActive && 0.7 }}
+            _hover={{ cursor: "pointer", opacity: !isActive ? 0.7 : 1 }}
             _focus={{ opacity: 0.7 }}
             transition="opacity 0.3s"
-          /> */}
+            aria-label={`${isActive ? "Pause" : "Play"} current station`}
+          />
         </CoverContainer>
       </AnimatePresence>
       <Flex width="95%">
@@ -142,7 +133,6 @@ const Tail: React.FC<IStation> = ({
           </Heading>
         </Box>
         {/* dots menu */}
-        {/* <Menu bg="gray.600" isLazy> */}
         <Menu isLazy>
           <MenuButton
             as={IconButton}

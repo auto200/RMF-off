@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const IS_DEV = process.env.ENV === "DEV";
 
 const server = app.listen(IS_DEV ? 5000 : null, () => {
-  console.log(`listening${IS_DEV ? "on port 5000" : ""}`);
+  console.log(`listening ${IS_DEV ? "on port 5000" : ""}`);
 });
 
 const io = new Server(server, {
@@ -31,6 +31,7 @@ const io = new Server(server, {
 let stations: Station[] = [];
 
 io.on("connect", (socket: Socket) => {
+  console.log("new connection");
   socket.emit("INITIAL_DATA", stations);
 });
 
@@ -60,7 +61,7 @@ io.on("connect", (socket: Socket) => {
         io.emit("DATA_UPDATE", changedStations);
         stations = newStationsData;
       } catch (err) {
-        await sleep(FETCH_INTERVAL);
+        console.log(err.response || err.message);
       }
       await sleep(FETCH_INTERVAL);
     }

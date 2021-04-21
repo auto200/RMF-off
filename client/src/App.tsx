@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Stations from "./components/Stations";
 import Player from "./components/Player";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
 import "typeface-quicksand";
 import { Box } from "@chakra-ui/react";
@@ -32,7 +32,7 @@ export interface IStation {
 }
 
 const App = () => {
-  const [socket] = useState(io(SOCKET_URL));
+  const [, setSocket] = useState<Socket>();
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<IStation[]>([]);
   //@ts-ignore
@@ -42,10 +42,11 @@ const App = () => {
   //   "stationName",
   //   "",
   // ]);
-  console.log(allStations);
   useEffect(() => {
-    socket.on("INITIAL_DATA", (tails: IStation[]) => {
-      setAllStations(tails);
+    const socket = io(SOCKET_URL);
+
+    socket.on("INITIAL_DATA", (stations: IStation[]) => {
+      setAllStations(stations);
     });
 
     socket.on("DATA_UPDATE", (changedTails: IStation[]) => {
@@ -64,6 +65,12 @@ const App = () => {
     socket.on("ERROR", (msg: string) => {
       setError(msg);
     });
+
+    setSocket(socket);
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   // useEffect(() => {
@@ -82,11 +89,12 @@ const App = () => {
         filterValue={filterValue}
         setFilter={setFilter}
         filterTypes={filterTypes}
-      />
-      <PlayerContext stations={allTails}> */}
-      <Stations stations={allStations} />
-      {/* <Player />
+      /> */}
+      <PlayerContext stations={allStations}>
+        <Stations stations={allStations} />
+        <Player />
       </PlayerContext>
+      {/*
       {error && (
         <Box fontSize="6xl" color="red.500" textAlign="center">
           {error}
