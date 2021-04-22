@@ -26,7 +26,7 @@ export interface IStation {
   streamURL: string;
   song: {
     name?: string;
-    cover?: string;
+    cover: string;
     artist?: string;
   };
 }

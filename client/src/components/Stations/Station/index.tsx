@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PlayerStateIcon from "../../PlayerStateIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
@@ -22,11 +22,13 @@ import { IStation } from "../../../App";
 import { PLAYER_STATES } from "../../../contexts/PlayerContext";
 
 const CoverContainer = chakra(motion.div);
+
 interface IProps extends IStation {
   handleCoverClick: () => void;
   isActive: boolean;
   playerState: PLAYER_STATES;
 }
+
 const Station: React.FC<IProps> = ({
   name,
   song,
@@ -34,11 +36,17 @@ const Station: React.FC<IProps> = ({
   isActive,
   handleCoverClick,
 }) => {
-  // const { ref, inView } = useInView();
+  const { ref, inView } = useInView();
+  const [inViewBackground, setInViewBackground] = useState<string>("");
   const activeTailBackground = useColorModeValue("gray.50", "gray.900");
 
   const query = encodeURIComponent(`${song.artist} - ${song.name}`);
   console.log("update");
+  useEffect(() => {
+    if (inView && song.cover !== inViewBackground) {
+      setInViewBackground(song.cover);
+    }
+  }, [inView]);
 
   return (
     <Flex
@@ -47,35 +55,26 @@ const Station: React.FC<IProps> = ({
       flexDir="column"
       alignItems="center"
       p={1}
-      // m={5}
       outline={`${isActive ? 4 : 2}px solid`}
       outlineColor={isActive ? "red.400" : "blue.600"}
-      // bg={isActive && activeTailBackground}
+      bg={isActive ? activeTailBackground : ""}
       transition="background 0.5s"
-      // ref={ref}
+      ref={ref}
     >
-      <Heading
-        isTruncated
-        color="blue.600"
-        maxW="95%"
-        title={name}
-        mb={1}
-        style={{ opacity: 1 }}
-      >
+      <Heading isTruncated color="blue.600" maxW="95%" title={name} mb={1}>
         {name}
       </Heading>
       <AnimatePresence exitBeforeEnter>
         <CoverContainer
-          // key={inView && song.name} // TODO: use `cover` as a key
+          key={inViewBackground}
           w="full"
           h="300px"
           pos="relative"
           bgPos="center"
           bgSize="cover"
-          //brightness filter
+          bgImage={`url(${inViewBackground})`}
           sx={{
-            // backgroundImage: inView ? `url(${cover})` : "",
-            backgroundImage: `url(${song.cover})`,
+            //brightness filter
             "&::before": {
               content: "''",
               position: "absolute",
@@ -100,7 +99,7 @@ const Station: React.FC<IProps> = ({
             fontSize="70px"
             color="gray.100"
             opacity={isActive ? 0.7 : 0}
-            _hover={{ cursor: "pointer", opacity: !isActive ? 0.7 : 1 }}
+            _hover={{ cursor: "pointer", opacity: isActive ? 1 : 0.7 }}
             _focus={{ opacity: 0.7 }}
             transition="opacity 0.3s"
             aria-label={`${isActive ? "Pause" : "Play"} current station`}
@@ -113,7 +112,7 @@ const Station: React.FC<IProps> = ({
             fontSize="2xl"
             color={useColorModeValue("gray.700", "gray.300")}
             isTruncated
-            py={!song.artist ? 3 : 0}
+            py={song.artist ? 0 : 3}
             title={song.name}
           >
             {song.name}
