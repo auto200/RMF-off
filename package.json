@@ -1,5 +1,5 @@
 {
-  "name": "RMF-off",
+  "name": "rmf-off",
   "version": "1.0.0",
   "description": "Custom fontend for rmfon api",
   "main": "index.js",
@@ -13,7 +13,9 @@
     "server": "cd server && npm start",
     "install:all": "cd server && npm ci && cd ../client && npm ci",
     "start": "npm-run-all --parallel client server",
-    "build:client": "cd client && npm run build"
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "build": "node build.js"
   },
   "keywords": [],
   "author": "",
