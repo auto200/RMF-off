@@ -35,7 +35,7 @@ const Player = () => {
     setPlayerState,
     togglePlayerState,
   } = usePlayer();
-  const [volume, setVolume] = useState<number>(50);
+  const [volume, setVolume] = useState<number>(100);
   const [stationSelected, setStationSelected] = useState<boolean>(false);
 
   const debouncedVolume = useDebounce(volume, 3000);
