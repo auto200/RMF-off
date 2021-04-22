@@ -10,18 +10,31 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import PropTypes from "prop-types";
+import { searchFilters } from "../../App";
 
-const Header = ({ currentFilterType, filterValue, setFilter, filterTypes }) => {
+interface IProps {
+  searchFilterType: searchFilters;
+  searchFilterValue: string;
+  setFilter: React.Dispatch<React.SetStateAction<[searchFilters, string]>>;
+}
+const Header: React.FC<IProps> = ({
+  searchFilterType,
+  searchFilterValue,
+  setFilter,
+}) => {
   const { toggleColorMode } = useColorMode();
 
-  const handleFilterTypeChange = (e) => {
-    const val = e.target.value;
-    setFilter([val, filterValue]);
+  const handleSearchFilterTypeChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const val = (e.target.value as unknown) as searchFilters;
+    setFilter([val, searchFilterValue]);
   };
-  const handleFilterInputChange = (e) => {
+  const handleSearchFilterInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const val = e.target.value;
-    setFilter([currentFilterType, val]);
+    setFilter([searchFilterType, val]);
   };
 
   return (
@@ -48,25 +61,23 @@ const Header = ({ currentFilterType, filterValue, setFilter, filterTypes }) => {
       ></IconButton>
       <HStack pr={[1, 4]}>
         <Select
-          value={currentFilterType}
-          onChange={handleFilterTypeChange}
+          value={searchFilterType}
+          onChange={handleSearchFilterTypeChange}
           fontWeight="bold"
-          css={{
+          sx={{
             "& option": {
               fontWeight: 500,
             },
           }}
         >
-          {Object.entries(filterTypes).map(([key, val]) => (
-            <option key={key} value={key}>
-              {val}
-            </option>
-          ))}
+          <option value={searchFilters.STATION_NAME}>Nazwa Stacji</option>
+          <option value={searchFilters.ARTIST}>Wykonawca</option>
+          <option value={searchFilters.SONG_NAME}>Nazwa utworu</option>
         </Select>
         <Input
           placeholder="szukaj"
-          value={filterValue}
-          onChange={handleFilterInputChange}
+          value={searchFilterValue}
+          onChange={handleSearchFilterInputChange}
           fontWeight="bold"
         />
       </HStack>
@@ -75,10 +86,3 @@ const Header = ({ currentFilterType, filterValue, setFilter, filterTypes }) => {
 };
 
 export default Header;
-
-Header.propTypes = {
-  currentFilterType: PropTypes.string.isRequired,
-  filterValue: PropTypes.string.isRequired,
-  setFilter: PropTypes.func.isRequired,
-  filterTypes: PropTypes.object.isRequired,
-};

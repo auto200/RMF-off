@@ -7,11 +7,11 @@ import PlayerContext from "./contexts/PlayerContext";
 import "typeface-quicksand";
 import { Box } from "@chakra-ui/react";
 
-const filterTypes = {
-  stationName: "Nazwa stacji",
-  artist: "Wykonawca",
-  songName: "Nazwa piosenki",
-};
+export enum searchFilters {
+  STATION_NAME = "STATION_NAME",
+  ARTIST = "ARTIST",
+  SONG_NAME = "SONG_NAME",
+}
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 if (!SOCKET_URL) {
@@ -36,12 +36,11 @@ const App = () => {
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<IStation[]>([]);
   //@ts-ignore
-  window.tails = allStations;
-  // const [filtredTails, setFiltredTails] = useState<Station[]>([]);
-  // const [[currentFilterType, filterValue], setFilter] = useState<any>([
-  //   "stationName",
-  //   "",
-  // ]);
+  window.stations = allStations;
+  const [filtredStations, setFiltredStations] = useState<IStation[]>([]);
+  const [[searchFilterType, searchFilterValue], setFilter] = useState<
+    [searchFilters, string]
+  >([searchFilters.STATION_NAME, ""]);
   useEffect(() => {
     const socket = io(SOCKET_URL);
 
@@ -73,33 +72,38 @@ const App = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const filterVal = filterValue.toLowerCase();
-  //   setFiltredTails(() =>
-  //     allStations.filter((tail) =>
-  //       tail[currentFilterType].toLowerCase().includes(filterVal)
-  //     )
-  //   );
-  // }, [allStations, filterValue, currentFilterType]);
+  useEffect(() => {
+    setFiltredStations(() =>
+      allStations.filter((station) => {
+        const values = {
+          [searchFilters.ARTIST]: station.song.artist,
+          [searchFilters.SONG_NAME]: station.song.name,
+          [searchFilters.STATION_NAME]: station.name,
+        };
+        return values[searchFilterType]
+          ?.toLowerCase()
+          .includes(searchFilterValue.toLocaleLowerCase());
+      })
+    );
+  }, [allStations, searchFilterValue, searchFilterType]);
 
   return (
     <>
-      {/* <Header
-        currentFilterType={currentFilterType}
-        filterValue={filterValue}
+      <Header
+        searchFilterType={searchFilterType}
+        searchFilterValue={searchFilterValue}
         setFilter={setFilter}
-        filterTypes={filterTypes}
-      /> */}
+      />
       <PlayerContext stations={allStations}>
-        <Stations stations={allStations} />
+        <Stations stations={filtredStations} />
         <Player />
       </PlayerContext>
-      {/*
+
       {error && (
         <Box fontSize="6xl" color="red.500" textAlign="center">
           {error}
         </Box>
-      )} */}
+      )}
     </>
   );
 };
