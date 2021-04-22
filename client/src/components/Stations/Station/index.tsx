@@ -76,7 +76,7 @@ const Station: React.FC<IProps> = ({
             {
               //prevent div flash on tap
               //https://stackoverflow.com/questions/6211959/html5-div-flashes-on-tap
-              "-webkit-tap-highlight-color": "rgba(0,0,0,0)",
+              WebkitTapHighlightColor: "rgba(0,0,0,0)",
               //brightness filter
               "&::before": {
                 content: "''",
