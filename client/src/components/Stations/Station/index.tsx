@@ -51,7 +51,6 @@ const Station: React.FC<IProps> = ({
   return (
     <Flex
       maxW="500px"
-      pos="relative"
       flexDir="column"
       alignItems="center"
       p={1}
@@ -73,19 +72,24 @@ const Station: React.FC<IProps> = ({
           bgPos="center"
           bgSize="cover"
           bgImage={`url(${inViewBackground})`}
-          sx={{
-            //brightness filter
-            "&::before": {
-              content: "''",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: `rgba(0, 0, 0, ${useColorModeValue(0, 0.3)})`,
-              transition: "background-color 0.3s",
-            },
-          }}
+          sx={
+            {
+              //prevent div flash on tap
+              //https://stackoverflow.com/questions/6211959/html5-div-flashes-on-tap
+              "-webkit-tap-highlight-color": "rgba(0,0,0,0)",
+              //brightness filter
+              "&::before": {
+                content: "''",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: `rgba(0, 0, 0, ${useColorModeValue(0, 0.3)})`,
+                transition: "background-color 0.3s",
+              },
+            } as React.CSSProperties
+          }
           //motion props
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
