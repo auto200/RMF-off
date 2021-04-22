@@ -76,8 +76,6 @@ const Player = () => {
   }, [playerState]);
 
   return (
-    // TODO: check for initial station select -- prevent filcering while changing
-    // stations
     <Fade in={stationSelected}>
       <Flex
         pos="fixed"

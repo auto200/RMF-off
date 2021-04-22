@@ -32,7 +32,7 @@ export interface IStation {
 }
 
 const App = () => {
-  const [, setSocket] = useState<Socket>();
+  const [socket, setSocket] = useState<Socket>(() => io(SOCKET_URL));
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<IStation[]>([]);
   //@ts-ignore
@@ -42,8 +42,6 @@ const App = () => {
     [searchFilters, string]
   >([searchFilters.STATION_NAME, ""]);
   useEffect(() => {
-    const socket = io(SOCKET_URL);
-
     socket.on("INITIAL_DATA", (stations: IStation[]) => {
       setAllStations(stations);
     });

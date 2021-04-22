@@ -2,7 +2,6 @@ import React from "react";
 import PlayerStateIcon from "../../PlayerStateIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
-import PropTypes from "prop-types";
 import {
   Box,
   chakra,
@@ -28,21 +27,18 @@ interface IProps extends IStation {
   isActive: boolean;
   playerState: PLAYER_STATES;
 }
-const Tail: React.FC<IProps> = ({
+const Station: React.FC<IProps> = ({
   name,
   song,
-  streamURL,
   playerState,
-  //player props
-  // id,
   isActive,
   handleCoverClick,
-  // playerState,
 }) => {
   // const { ref, inView } = useInView();
   const activeTailBackground = useColorModeValue("gray.50", "gray.900");
 
   const query = encodeURIComponent(`${song.artist} - ${song.name}`);
+  console.log("update");
 
   return (
     <Flex
@@ -171,4 +167,4 @@ const Tail: React.FC<IProps> = ({
   );
 };
 
-export default Tail;
+export default Station;

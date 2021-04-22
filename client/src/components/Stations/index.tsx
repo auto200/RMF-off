@@ -11,6 +11,7 @@ const Stations: React.FC<{ stations: IStation[] }> = ({ stations }) => {
     changeStation,
     togglePlayerState,
   } = usePlayer();
+
   return (
     <Flex justifyContent="center">
       <SimpleGrid minChildWidth="340px" spacing="20px" p="20px" w="full">
@@ -35,7 +36,6 @@ const Stations: React.FC<{ stations: IStation[] }> = ({ stations }) => {
               song={song}
               streamURL={streamURL}
               // //player props
-              // id={id}
               isActive={isActive}
               handleCoverClick={handleCoverClick}
               playerState={playerState}
