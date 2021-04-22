@@ -28,6 +28,14 @@ const PlayerContextProvider: React.FC<{ stations: IStation[] }> = ({
   const [currentStation, setCurrentStation] = useState<IStation | null>(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
+  useEffect(() => {
+    if (!currentStation) return;
+    const newStationData = stations.find((s) => s.id === currentStation.id);
+    if (newStationData) {
+      setCurrentStation(newStationData);
+    }
+  }, [stations]);
+
   const changeStation = (stationId: number) => {
     if (stationId !== currentStation?.id) {
       const newStation = stations.find(({ id }) => id === stationId);

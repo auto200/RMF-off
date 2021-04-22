@@ -36,9 +36,16 @@ const Player = () => {
     togglePlayerState,
   } = usePlayer();
   const [volume, setVolume] = useState<number>(50);
+  const [stationSelected, setStationSelected] = useState<boolean>(false);
 
   const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    if (currentStation && !stationSelected) {
+      setStationSelected(true);
+    }
+  }, [currentStation]);
 
   useEffect(() => {
     const savedVolume = window.localStorage.getItem("volume") as number | null;
@@ -71,7 +78,7 @@ const Player = () => {
   return (
     // TODO: check for initial station select -- prevent filcering while changing
     // stations
-    <Fade in={!!currentStation?.name}>
+    <Fade in={stationSelected}>
       <Flex
         pos="fixed"
         left="50%"
