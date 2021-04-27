@@ -38,7 +38,7 @@ const Station: React.FC<IProps> = ({
 }) => {
   const { ref, inView } = useInView();
   const [inViewBackground, setInViewBackground] = useState<string>("");
-  const activeTailBackground = useColorModeValue("gray.50", "gray.900");
+  const stationActiveBackground = useColorModeValue("gray.50", "gray.900");
   const coverFlterOpacity = useColorModeValue(0, 0.3);
   const songTitleColor = useColorModeValue("gray.700", "gray.300");
 
@@ -47,7 +47,7 @@ const Station: React.FC<IProps> = ({
     if (inView && song.cover !== inViewBackground) {
       setInViewBackground(song.cover);
     }
-  }, [inView]);
+  }, [inView, song.cover]);
 
   return (
     <Flex
@@ -58,7 +58,7 @@ const Station: React.FC<IProps> = ({
       p={1}
       outline={`${isActive ? 4 : 2}px solid`}
       outlineColor={isActive ? "red.400" : "blue.600"}
-      bg={isActive ? activeTailBackground : ""}
+      bg={isActive ? stationActiveBackground : ""}
       transition="background 0.5s"
       ref={ref}
     >
@@ -75,7 +75,7 @@ const Station: React.FC<IProps> = ({
               pos="relative"
               bgPos="center"
               bgSize="cover"
-              bgImage={`url(${inViewBackground})`}
+              style={{ backgroundImage: `url(${inViewBackground})` }}
               sx={
                 {
                   //prevent div flash on tap
