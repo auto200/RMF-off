@@ -6,6 +6,8 @@ import { io, Socket } from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
 import "typeface-quicksand";
 import { Box } from "@chakra-ui/react";
+import jammingFavicon from "./utils/jammingFavicon";
+const Favicon = require("react-favicon");
 
 export enum searchFilters {
   STATION_NAME = "STATION_NAME",
@@ -87,6 +89,7 @@ const App = () => {
 
   return (
     <>
+      <Favicon url={jammingFavicon} animate animationDelay={50} />
       <Header
         searchFilterType={searchFilterType}
         searchFilterValue={searchFilterValue}
