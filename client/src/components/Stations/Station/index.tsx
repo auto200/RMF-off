@@ -62,11 +62,11 @@ const Station: React.FC<IProps> = ({
       transition="background 0.5s"
       ref={ref}
     >
-      {inView ? (
+      <Heading isTruncated color="blue.600" maxW="95%" title={name} mb={1}>
+        {name}
+      </Heading>
+      {inView && (
         <>
-          <Heading isTruncated color="blue.600" maxW="95%" title={name} mb={1}>
-            {name}
-          </Heading>
           <AnimatePresence exitBeforeEnter>
             <CoverContainer
               key={inViewBackground}
@@ -171,7 +171,7 @@ const Station: React.FC<IProps> = ({
             </Menu>
           </Flex>
         </>
-      ) : null}
+      )}
     </Flex>
   );
 };
