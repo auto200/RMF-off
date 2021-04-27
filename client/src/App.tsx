@@ -5,8 +5,10 @@ import Player from "./components/Player";
 import { io, Socket } from "socket.io-client";
 import PlayerContext from "./contexts/PlayerContext";
 import "typeface-quicksand";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import jammingFavicon from "./utils/jammingFavicon";
+import { LoadingIcon } from "./utils/icons";
+import { headerHeight } from "./utils/constants";
 const Favicon = require("react-favicon");
 
 export enum searchFilters {
@@ -34,7 +36,6 @@ export interface IStation {
 }
 
 const App = () => {
-  const [socket, setSocket] = useState<Socket>(() => io(SOCKET_URL));
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<IStation[]>([]);
   //@ts-ignore
@@ -44,6 +45,8 @@ const App = () => {
     [searchFilters, string]
   >([searchFilters.STATION_NAME, ""]);
   useEffect(() => {
+    const socket = io(SOCKET_URL);
+
     socket.on("INITIAL_DATA", (stations: IStation[]) => {
       setAllStations(stations);
     });
@@ -64,8 +67,6 @@ const App = () => {
     socket.on("ERROR", (msg: string) => {
       setError(msg);
     });
-
-    setSocket(socket);
 
     return () => {
       socket.disconnect();
@@ -95,10 +96,22 @@ const App = () => {
         searchFilterValue={searchFilterValue}
         setFilter={setFilter}
       />
-      <PlayerContext stations={allStations}>
-        <Stations stations={filtredStations} />
-        <Player />
-      </PlayerContext>
+      {allStations.length ? (
+        <PlayerContext stations={allStations}>
+          <Stations stations={filtredStations} />
+          <Player />
+        </PlayerContext>
+      ) : (
+        <Flex
+          h={`calc(100vh - ${headerHeight}px - 200px)`}
+          justifyContent="center"
+          alignItems="center"
+          fontSize="80px"
+          mt="24"
+        >
+          {LoadingIcon}
+        </Flex>
+      )}
 
       {error && (
         <Box fontSize="6xl" color="red.500" textAlign="center">
