@@ -2,14 +2,19 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "lib": ["es6"],
-    "allowJs": true,
+    "lib": [
+      "es6"
+    ],
+    "allowJs": false,
     "outDir": "build",
     "rootDir": "./",
     "strict": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
     "downlevelIteration": true
   }
 }
