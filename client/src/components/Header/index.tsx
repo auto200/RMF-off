@@ -1,6 +1,3 @@
-import React from "react";
-import { headerHeight } from "../../utils/constants";
-import { FaMoon, FaSun } from "react-icons/fa";
 import {
   Flex,
   HStack,
@@ -10,7 +7,10 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { searchFilters } from "../../App";
+import React from "react";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { headerHeight } from "../../utils/constants";
+import { searchFilters } from "../../utils/enums";
 
 interface IProps {
   searchFilterType: searchFilters;
@@ -27,7 +27,7 @@ const Header: React.FC<IProps> = ({
   const handleSearchFilterTypeChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const val = (e.target.value as unknown) as searchFilters;
+    const val = e.target.value as unknown as searchFilters;
     setFilter([val, searchFilterValue]);
   };
   const handleSearchFilterInputChange = (

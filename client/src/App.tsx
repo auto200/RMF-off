@@ -6,16 +6,12 @@ import Header from "./components/Header";
 import Player from "./components/Player";
 import Stations from "./components/Stations";
 import PlayerContext from "./contexts/PlayerContext";
-import { headerHeight, SOCKET_EVENTS } from "./utils/constants";
+import { headerHeight } from "./utils/constants";
+import { searchFilters, SOCKET_EVENTS } from "./utils/enums";
 import { LoadingIcon } from "./utils/icons";
+import { Station } from "./utils/interfaces";
 import jammingFavicon from "./utils/jammingFavicon";
 const Favicon = require("react-favicon");
-
-export enum searchFilters {
-  STATION_NAME = "STATION_NAME",
-  ARTIST = "ARTIST",
-  SONG_NAME = "SONG_NAME",
-}
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 if (!SOCKET_URL) {
@@ -24,32 +20,21 @@ if (!SOCKET_URL) {
   );
 }
 
-export interface IStation {
-  id: number;
-  name: string;
-  streamURL: string;
-  song: {
-    name?: string;
-    cover: string;
-    artist?: string;
-  };
-}
-
 const App = () => {
   const [error, setError] = useState<string>("");
-  const [allStations, setAllStations] = useState<IStation[]>([]);
-  const [filtredStations, setFiltredStations] = useState<IStation[]>([]);
+  const [allStations, setAllStations] = useState<Station[]>([]);
+  const [filtredStations, setFiltredStations] = useState<Station[]>([]);
   const [[searchFilterType, searchFilterValue], setFilter] = useState<
     [searchFilters, string]
   >([searchFilters.STATION_NAME, ""]);
   useEffect(() => {
     const socket = io(SOCKET_URL);
 
-    socket.on(SOCKET_EVENTS.INITIAL_STATIONS_DATA, (stations: IStation[]) => {
+    socket.on(SOCKET_EVENTS.INITIAL_STATIONS_DATA, (stations: Station[]) => {
       setAllStations(stations);
     });
 
-    socket.on(SOCKET_EVENTS.STATIONS_UPDATE, (changedStations: IStation[]) => {
+    socket.on(SOCKET_EVENTS.STATIONS_UPDATE, (changedStations: Station[]) => {
       setAllStations((prevStations) => {
         const newStations = [...prevStations];
         changedStations.forEach((changedStation) => {

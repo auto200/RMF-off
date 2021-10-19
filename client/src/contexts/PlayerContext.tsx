@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { IStation } from "../App";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Station } from "../utils/interfaces";
 
 export enum PLAYER_STATES {
   PAUSED,
@@ -8,7 +8,7 @@ export enum PLAYER_STATES {
 }
 
 const PlayerContext = createContext<{
-  currentStation: IStation | null;
+  currentStation: Station | null;
   playerState: PLAYER_STATES;
   setPlayerState: (state: PLAYER_STATES) => void;
   changeStation: (stationId: number) => void;
@@ -21,11 +21,11 @@ const PlayerContext = createContext<{
   togglePlayerState: () => {},
 });
 
-const PlayerContextProvider: React.FC<{ stations: IStation[] }> = ({
+const PlayerContextProvider: React.FC<{ stations: Station[] }> = ({
   children,
   stations,
 }) => {
-  const [currentStation, setCurrentStation] = useState<IStation | null>(null);
+  const [currentStation, setCurrentStation] = useState<Station | null>(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
 
   useEffect(() => {

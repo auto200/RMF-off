@@ -1,7 +1,3 @@
-import React, { useEffect, useState } from "react";
-import PlayerStateIcon from "../../PlayerStateIcon";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
 import {
   Box,
   chakra,
@@ -16,10 +12,14 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useInView } from "react-intersection-observer";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
 import { BiDotsVerticalRounded, BiLinkExternal } from "react-icons/bi";
-import { IStation } from "../../../App";
+import { FaGoogle, FaPlay, FaYoutube } from "react-icons/fa";
+import { useInView } from "react-intersection-observer";
 import { PLAYER_STATES } from "../../../contexts/PlayerContext";
+import { Station as IStation } from "../../../utils/interfaces";
+import PlayerStateIcon from "../../PlayerStateIcon";
 
 const CoverContainer = chakra(motion.div);
 
@@ -151,7 +151,7 @@ const Station: React.FC<IProps> = ({
                   as={Link}
                   icon={<FaGoogle />}
                   h="50px"
-                  command={((<BiLinkExternal />) as unknown) as string}
+                  command={(<BiLinkExternal />) as unknown as string}
                   href={`https://www.google.com/search?q=${query}`}
                   isExternal
                 >
@@ -161,7 +161,7 @@ const Station: React.FC<IProps> = ({
                   as={Link}
                   icon={<FaYoutube />}
                   h="50px"
-                  command={((<BiLinkExternal />) as unknown) as string}
+                  command={(<BiLinkExternal />) as unknown as string}
                   href={`https://www.youtube.com/results?search_query=${query}`}
                   isExternal
                 >

@@ -1,16 +1,12 @@
-import React from "react";
-import Station from "./Station";
-import { PLAYER_STATES, usePlayer } from "../../contexts/PlayerContext";
 import { Flex, SimpleGrid } from "@chakra-ui/react";
-import { IStation } from "../../App";
+import React from "react";
+import { PLAYER_STATES, usePlayer } from "../../contexts/PlayerContext";
+import { Station as IStation } from "../../utils/interfaces";
+import Station from "./Station";
 
 const Stations: React.FC<{ stations: IStation[] }> = ({ stations }) => {
-  const {
-    currentStation,
-    playerState,
-    changeStation,
-    togglePlayerState,
-  } = usePlayer();
+  const { currentStation, playerState, changeStation, togglePlayerState } =
+    usePlayer();
 
   return (
     <Flex justifyContent="center">
