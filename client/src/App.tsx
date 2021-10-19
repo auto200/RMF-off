@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import Header from "./components/Header";
-import Stations from "./components/Stations";
-import Player from "./components/Player";
-import { io, Socket } from "socket.io-client";
-import PlayerContext from "./contexts/PlayerContext";
-import "typeface-quicksand";
 import { Box, Flex } from "@chakra-ui/react";
-import jammingFavicon from "./utils/jammingFavicon";
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import "typeface-quicksand";
+import Header from "./components/Header";
+import Player from "./components/Player";
+import Stations from "./components/Stations";
+import PlayerContext from "./contexts/PlayerContext";
+import { headerHeight, SOCKET_EVENTS } from "./utils/constants";
 import { LoadingIcon } from "./utils/icons";
-import { headerHeight } from "./utils/constants";
+import jammingFavicon from "./utils/jammingFavicon";
 const Favicon = require("react-favicon");
 
 export enum searchFilters {
@@ -38,8 +38,6 @@ export interface IStation {
 const App = () => {
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<IStation[]>([]);
-  //@ts-ignore
-  window.stations = allStations;
   const [filtredStations, setFiltredStations] = useState<IStation[]>([]);
   const [[searchFilterType, searchFilterValue], setFilter] = useState<
     [searchFilters, string]
@@ -47,24 +45,26 @@ const App = () => {
   useEffect(() => {
     const socket = io(SOCKET_URL);
 
-    socket.on("INITIAL_DATA", (stations: IStation[]) => {
+    socket.on(SOCKET_EVENTS.INITIAL_STATIONS_DATA, (stations: IStation[]) => {
       setAllStations(stations);
     });
 
-    socket.on("DATA_UPDATE", (changedTails: IStation[]) => {
-      setAllStations((prev) => {
-        const newTails = prev.map((tail) => {
-          const modifiedTail = changedTails.find((obj) => obj.id === tail.id);
-          if (modifiedTail) {
-            return { ...tail, ...modifiedTail };
+    socket.on(SOCKET_EVENTS.STATIONS_UPDATE, (changedStations: IStation[]) => {
+      setAllStations((prevStations) => {
+        const newStations = [...prevStations];
+        changedStations.forEach((changedStation) => {
+          const stationToUpdateIndex = prevStations.findIndex(
+            (prevStation) => prevStation.id === changedStation.id
+          );
+          if (stationToUpdateIndex > -1) {
+            newStations[stationToUpdateIndex] = changedStation;
           }
-          return tail;
         });
-        return newTails;
+        return newStations;
       });
     });
 
-    socket.on("ERROR", (msg: string) => {
+    socket.on(SOCKET_EVENTS.FATAL_ERROR, (msg: string) => {
       setError(msg);
     });
 
@@ -74,7 +74,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    setFiltredStations(() =>
+    setFiltredStations(
       allStations.filter((station) => {
         const values = {
           [searchFilters.ARTIST]: station.song.artist,

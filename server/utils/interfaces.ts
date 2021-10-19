@@ -1,11 +1,11 @@
-export interface StationBaseInfo {
+export interface StationBase {
   id: number;
   name: string;
   streamURL: string;
   cover: string;
 }
 
-interface PlayingSongInfo {
+interface Song {
   name?: string;
   utwor?: string;
   cover?: string;
@@ -13,10 +13,10 @@ interface PlayingSongInfo {
   artist?: string;
 }
 
-export interface Station extends Omit<StationBaseInfo, "cover"> {
-  song: Omit<PlayingSongInfo, "utwor" | "coverBigUrl">;
+export interface Station extends StationBase {
+  song: Omit<Song, "utwor" | "coverBigUrl">;
 }
 
-export interface PlayingStationsInfo {
-  [key: string]: PlayingSongInfo;
+export interface RadioIdToPlayingSongMap {
+  [key: string]: Song;
 }

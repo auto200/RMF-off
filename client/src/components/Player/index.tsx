@@ -1,20 +1,22 @@
-import React, { useRef, useEffect, useState } from "react";
-import { usePlayer } from "../../contexts/PlayerContext";
-import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
-import { playerHeight } from "../../utils/constants";
-import PlayerStateIcon from "../PlayerStateIcon";
-import { PLAYER_STATES } from "../../contexts/PlayerContext";
-import "react-rangeslider/lib/index.css";
-import useDebounce from "../../utils/hooks/useDebounce";
-import { Image, Box, Text, Flex, Progress } from "@chakra-ui/react";
-import { Fade } from "@chakra-ui/react";
 import {
+  Box,
+  Fade,
+  Flex,
+  Image,
+  Progress,
   Slider,
-  SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  SliderTrack,
+  Text,
 } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
+import { FaVolumeDown, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
+import { PLAYER_STATES, usePlayer } from "../../contexts/PlayerContext";
+import { playerHeight } from "../../utils/constants";
+import useDebounce from "../../utils/hooks/useDebounce";
+import PlayerStateIcon from "../PlayerStateIcon";
 
 const AudioIcon: React.FC<{ volume: number }> = ({ volume }) => {
   let Icon;
@@ -29,12 +31,8 @@ const AudioIcon: React.FC<{ volume: number }> = ({ volume }) => {
 };
 
 const Player = () => {
-  const {
-    currentStation,
-    playerState,
-    setPlayerState,
-    togglePlayerState,
-  } = usePlayer();
+  const { currentStation, playerState, setPlayerState, togglePlayerState } =
+    usePlayer();
   const [volume, setVolume] = useState<number>(100);
   const [stationSelected, setStationSelected] = useState<boolean>(false);
 
