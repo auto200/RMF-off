@@ -1,4 +1,4 @@
-export default [
+const frames = [
   `${process.env.PUBLIC_URL}/jamming/1.gif`,
   `${process.env.PUBLIC_URL}/jamming/2.gif`,
   `${process.env.PUBLIC_URL}/jamming/3.gif`,
@@ -16,3 +16,5 @@ export default [
   `${process.env.PUBLIC_URL}/jamming/15.gif`,
   `${process.env.PUBLIC_URL}/jamming/16.gif`,
 ];
+
+export default frames;
