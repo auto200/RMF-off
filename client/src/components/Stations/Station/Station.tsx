@@ -36,7 +36,6 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
   const coverFilter = useColorModeValue(undefined, darkModeCoverFilter);
   const [coverSrc, setCoverSrc] = useState("");
 
-  const searchQuery = encodeURIComponent(`${song.artist} - ${song.name}`);
   //trigger animation for the first time that cover is in view and every time
   //cover source changes
   useEffect(() => {
@@ -93,7 +92,7 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
       </AnimatePresence>
       <Flex width="95%">
         <ArtistAndTitle song={song} />
-        <Menu searchQuery={searchQuery} />
+        <Menu searchTerm={`${song.artist} - ${song.name}`} />
       </Flex>
     </Flex>
   );

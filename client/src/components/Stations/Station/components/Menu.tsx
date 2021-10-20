@@ -5,16 +5,40 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useClipboard,
+  useToast,
 } from "@chakra-ui/react";
-import React, { memo } from "react";
-import { BiDotsVerticalRounded, BiLinkExternal } from "react-icons/bi";
+import React, { memo, useEffect } from "react";
+import {
+  BiClipboard,
+  BiCopy,
+  BiDotsVerticalRounded,
+  BiLinkExternal,
+} from "react-icons/bi";
 import { FaGoogle, FaYoutube } from "react-icons/fa";
 
 interface MenuProps {
-  searchQuery: string;
+  searchTerm: string;
 }
 //chakra menu is heavy to rerender for some reason
-export const Menu: React.FC<MenuProps> = memo(({ searchQuery }) => {
+export const Menu: React.FC<MenuProps> = memo(({ searchTerm }) => {
+  const { onCopy, hasCopied } = useClipboard(searchTerm);
+  const toast = useToast();
+  const searchQuery = encodeURIComponent(searchTerm);
+
+  useEffect(() => {
+    if (!hasCopied) {
+      return;
+    }
+
+    toast({
+      status: "success",
+      title: "skopiowano do schowka",
+      duration: 3000,
+      position: "top-right",
+    });
+  }, [hasCopied, toast]);
+
   return (
     <ChakraMenu isLazy>
       <MenuButton
@@ -46,6 +70,14 @@ export const Menu: React.FC<MenuProps> = memo(({ searchQuery }) => {
           isExternal
         >
           Szukaj w YouTube
+        </MenuItem>
+        <MenuItem
+          icon={<BiCopy />}
+          h="50px"
+          command={(<BiClipboard />) as any}
+          onClick={onCopy}
+        >
+          Kopiuj do schowka
         </MenuItem>
       </MenuList>
     </ChakraMenu>
