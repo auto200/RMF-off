@@ -1,24 +1,23 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { PLAYER_STATE } from "../utils/enums";
 import { Station } from "../utils/interfaces";
 
-export enum PLAYER_STATES {
-  PAUSED,
-  PLAYING,
-  LOADING,
-}
+const throwNotImplemented = () => {
+  throw new Error("Function not implemented");
+};
 
 const PlayerContext = createContext<{
   currentStation: Station | null;
-  playerState: PLAYER_STATES;
-  setPlayerState: (state: PLAYER_STATES) => void;
+  playerState: PLAYER_STATE;
+  setPlayerState: (state: PLAYER_STATE) => void;
   changeStation: (stationId: number) => void;
   togglePlayerState: () => void;
 }>({
   currentStation: null,
-  playerState: PLAYER_STATES.PAUSED,
-  setPlayerState: () => {},
-  changeStation: () => {},
-  togglePlayerState: () => {},
+  playerState: PLAYER_STATE.PAUSED,
+  setPlayerState: () => throwNotImplemented,
+  changeStation: () => throwNotImplemented,
+  togglePlayerState: () => throwNotImplemented,
 });
 
 const PlayerContextProvider: React.FC<{ stations: Station[] }> = ({
@@ -26,7 +25,7 @@ const PlayerContextProvider: React.FC<{ stations: Station[] }> = ({
   stations,
 }) => {
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
-  const [playerState, setPlayerState] = useState(PLAYER_STATES.PAUSED);
+  const [playerState, setPlayerState] = useState(PLAYER_STATE.PAUSED);
 
   useEffect(() => {
     if (!currentStation) return;
@@ -34,23 +33,24 @@ const PlayerContextProvider: React.FC<{ stations: Station[] }> = ({
     if (newStationData) {
       setCurrentStation(newStationData);
     }
-  }, [stations]);
+  }, [currentStation, stations]);
 
   const changeStation = (stationId: number) => {
-    if (stationId !== currentStation?.id) {
-      const newStation = stations.find(({ id }) => id === stationId);
-      if (newStation) {
-        setCurrentStation(newStation);
-        setPlayerState(PLAYER_STATES.PLAYING);
-      }
+    if (stationId === currentStation?.id) {
+      return;
+    }
+    const newStation = stations.find(({ id }) => id === stationId);
+    if (newStation) {
+      setCurrentStation(newStation);
+      setPlayerState(PLAYER_STATE.LOADING);
     }
   };
 
   const togglePlayerState = () => {
-    if (playerState === PLAYER_STATES.PLAYING) {
-      setPlayerState(PLAYER_STATES.PAUSED);
-    } else if (playerState === PLAYER_STATES.PAUSED) {
-      setPlayerState(PLAYER_STATES.PLAYING);
+    if (playerState === PLAYER_STATE.PLAYING) {
+      setPlayerState(PLAYER_STATE.PAUSED);
+    } else if (playerState === PLAYER_STATE.PAUSED) {
+      setPlayerState(PLAYER_STATE.PLAYING);
     }
   };
 

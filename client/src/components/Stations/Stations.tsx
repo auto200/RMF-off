@@ -1,6 +1,7 @@
 import { Flex, SimpleGrid } from "@chakra-ui/react";
 import React from "react";
-import { PLAYER_STATE, usePlayer } from "../../contexts/PlayerContext";
+import { usePlayer } from "../../contexts/PlayerContext";
+import { PLAYER_STATE } from "../../utils/enums";
 import { Station as IStation } from "../../utils/interfaces";
 import Station from "./Station";
 

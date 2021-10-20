@@ -9,3 +9,9 @@ export enum searchFilters {
   ARTIST = "ARTIST",
   SONG_NAME = "SONG_NAME",
 }
+
+export enum PLAYER_STATE {
+  PAUSED,
+  PLAYING,
+  LOADING,
+}
