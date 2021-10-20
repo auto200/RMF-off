@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from "react";
-import Header from "./components/Header";
-import Stations from "./components/Stations";
-import Player from "./components/Player";
-import { io, Socket } from "socket.io-client";
-import PlayerContext from "./contexts/PlayerContext";
-import "typeface-quicksand";
 import { Box, Flex } from "@chakra-ui/react";
-import jammingFavicon from "./utils/jammingFavicon";
-import { LoadingIcon } from "./utils/icons";
+import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+import "typeface-quicksand";
+import Header from "./components/Header";
+import Player from "./components/Player";
+import Stations from "./components/Stations";
+import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight } from "./utils/constants";
+import { searchFilters, SOCKET_EVENTS } from "./utils/enums";
+import { LoadingIcon } from "./utils/icons";
+import { Station } from "./utils/interfaces";
+import jammingFavicon from "./utils/jammingFavicon";
 const Favicon = require("react-favicon");
-
-export enum searchFilters {
-  STATION_NAME = "STATION_NAME",
-  ARTIST = "ARTIST",
-  SONG_NAME = "SONG_NAME",
-}
 
 const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
 if (!SOCKET_URL) {
@@ -24,47 +20,39 @@ if (!SOCKET_URL) {
   );
 }
 
-export interface IStation {
-  id: number;
-  name: string;
-  streamURL: string;
-  song: {
-    name?: string;
-    cover: string;
-    artist?: string;
-  };
-}
+const IS_DEV = process.env.NODE_ENV === "development";
 
 const App = () => {
   const [error, setError] = useState<string>("");
-  const [allStations, setAllStations] = useState<IStation[]>([]);
-  //@ts-ignore
-  window.stations = allStations;
-  const [filtredStations, setFiltredStations] = useState<IStation[]>([]);
+  const [allStations, setAllStations] = useState<Station[]>([]);
+  const [filtredStations, setFiltredStations] = useState<Station[]>([]);
   const [[searchFilterType, searchFilterValue], setFilter] = useState<
     [searchFilters, string]
   >([searchFilters.STATION_NAME, ""]);
+
   useEffect(() => {
     const socket = io(SOCKET_URL);
 
-    socket.on("INITIAL_DATA", (stations: IStation[]) => {
+    socket.on(SOCKET_EVENTS.INITIAL_STATIONS_DATA, (stations: Station[]) => {
       setAllStations(stations);
     });
 
-    socket.on("DATA_UPDATE", (changedTails: IStation[]) => {
-      setAllStations((prev) => {
-        const newTails = prev.map((tail) => {
-          const modifiedTail = changedTails.find((obj) => obj.id === tail.id);
-          if (modifiedTail) {
-            return { ...tail, ...modifiedTail };
+    socket.on(SOCKET_EVENTS.STATIONS_UPDATE, (changedStations: Station[]) => {
+      setAllStations((prevStations) => {
+        const newStations = [...prevStations];
+        changedStations.forEach((changedStation) => {
+          const stationToUpdateIndex = prevStations.findIndex(
+            (prevStation) => prevStation.id === changedStation.id
+          );
+          if (stationToUpdateIndex > -1) {
+            newStations[stationToUpdateIndex] = changedStation;
           }
-          return tail;
         });
-        return newTails;
+        return newStations;
       });
     });
 
-    socket.on("ERROR", (msg: string) => {
+    socket.on(SOCKET_EVENTS.FATAL_ERROR, (msg: string) => {
       setError(msg);
     });
 
@@ -74,7 +62,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    setFiltredStations(() =>
+    setFiltredStations(
       allStations.filter((station) => {
         const values = {
           [searchFilters.ARTIST]: station.song.artist,
@@ -87,6 +75,22 @@ const App = () => {
       })
     );
   }, [allStations, searchFilterValue, searchFilterType]);
+
+  //My production server goes to "sleep mode" if no requests are made, cron job
+  //does not help and there's a cold start, heres a quick dirty fix
+  useEffect(() => {
+    if (!IS_DEV) return;
+
+    setTimeout(() => {
+      setAllStations((stations) => {
+        if (stations.length === 0) {
+          window.location.reload();
+        }
+
+        return stations;
+      });
+    }, 3000);
+  }, []);
 
   return (
     <>

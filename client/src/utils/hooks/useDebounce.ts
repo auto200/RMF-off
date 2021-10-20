@@ -1,6 +1,6 @@
 // refference: https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 // Our hook
 function useDebounce<T>(value: T, delay: number) {
   // State and setters for debounced value
@@ -28,7 +28,7 @@ function useDebounce<T>(value: T, delay: number) {
     // Only re-call effect if value changes
     // You could also add the "delay" var to inputs array if you ...
     // ... need to be able to change that dynamically.
-    [value]
+    [value, delay]
   );
 
   return debouncedValue;
