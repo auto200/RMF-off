@@ -20,6 +20,8 @@ if (!SOCKET_URL) {
   );
 }
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 const App = () => {
   const [error, setError] = useState<string>("");
   const [allStations, setAllStations] = useState<Station[]>([]);
@@ -27,6 +29,7 @@ const App = () => {
   const [[searchFilterType, searchFilterValue], setFilter] = useState<
     [searchFilters, string]
   >([searchFilters.STATION_NAME, ""]);
+
   useEffect(() => {
     const socket = io(SOCKET_URL);
 
@@ -72,6 +75,22 @@ const App = () => {
       })
     );
   }, [allStations, searchFilterValue, searchFilterType]);
+
+  //My production server goes to "sleep mode" if no requests are made, cron job
+  //does not help and there's a cold start, heres a quick dirty fix
+  useEffect(() => {
+    if (!IS_DEV) return;
+
+    setTimeout(() => {
+      setAllStations((stations) => {
+        if (stations.length === 0) {
+          window.location.reload();
+        }
+
+        return stations;
+      });
+    }, 3000);
+  }, []);
 
   return (
     <>
