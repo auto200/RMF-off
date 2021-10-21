@@ -79,7 +79,7 @@ const App = () => {
   //My production server goes to "sleep mode" if no requests are made, cron job
   //does not help and there's a cold start, heres a quick dirty fix
   useEffect(() => {
-    if (!IS_DEV) return;
+    if (IS_DEV) return;
 
     setTimeout(() => {
       setAllStations((stations) => {
