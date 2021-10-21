@@ -6,7 +6,13 @@ DEMO 👉 https://RMFoff.auto200.eu/
 
 Browse and listen to all RMF stations in one place.
 
-Written in [React](https://reactjs.org/) with data from [https://www.rmfon.pl/](https://www.rmfon.pl/)
+### Backend
+
+Written in Express and Socket.io with data from [RMFon](https://www.rmfon.pl/)
+
+### Frontend
+
+ReactJS, Chakra IU, Socket.io
 
 ## Setup
 
@@ -21,13 +27,13 @@ git clone https://github.com/auto200/RMF-off.git
 Once downloaded, open the terminal in the project directory, and install dependencies with:
 
 ```
-npm install
+yarn install
 ```
 
 Then start the app with:
 
 ```
-npm start
+yarn start
 ```
 
 The app should now be up and running at http://localhost:3000 🚀
