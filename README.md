@@ -27,7 +27,7 @@ git clone https://github.com/auto200/RMF-off.git
 Once downloaded, open the terminal in the project directory, and install dependencies with:
 
 ```
-yarn install
+yarn install:all
 ```
 
 Then start the app with:
