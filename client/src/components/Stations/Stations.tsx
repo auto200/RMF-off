@@ -11,7 +11,13 @@ const Stations: React.FC<{ stations: IStation[] }> = ({ stations }) => {
 
   return (
     <Flex justifyContent="center">
-      <SimpleGrid minChildWidth="340px" spacing="20px" p="20px" w="full">
+      <SimpleGrid
+        templateColumns="repeat(auto-fit, minmax(350px, max-content))"
+        justifyContent="center"
+        spacing="20px"
+        p="20px"
+        w="full"
+      >
         {stations.map(({ id, name, song, streamURL }) => {
           const isActive = currentStation?.id === id;
           const playStation = () => {
