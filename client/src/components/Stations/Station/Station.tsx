@@ -46,7 +46,7 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
 
   return (
     <Flex
-      maxW="500px"
+      maxW="350px"
       h="410px"
       flexDir="column"
       alignItems="center"
