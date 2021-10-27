@@ -11,8 +11,13 @@ import PlayingIndication from "./components/PlayingIndication";
 import SongNameAndArtist from "./components/SongNameAndArtist";
 
 const Player = () => {
-  const { currentStation, playerState, setPlayerState, togglePlayerState } =
-    usePlayer();
+  const {
+    currentStation,
+    playerState,
+    setPlayerState,
+    togglePlayerState,
+    activeStationElementRef,
+  } = usePlayer();
   const [volume, setVolume] = useState<number>(100);
 
   const debouncedVolume = useDebounce(volume, 3000);
@@ -65,6 +70,13 @@ const Player = () => {
           src={currentStation?.song.cover}
           boxSize={PLAYER_HEIGHT + "px"}
           fit="cover"
+          cursor="pointer"
+          onClick={() =>
+            activeStationElementRef.current?.scrollIntoView({
+              block: "center",
+            })
+          }
+          title="Przejdź do kafelki"
         />
         <SongNameAndArtist
           songName={currentStation?.song.name}

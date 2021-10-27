@@ -28,10 +28,17 @@ const darkModeCoverFilter = {
 interface IProps extends IStation {
   play: () => void;
   isActive: boolean;
+  activeStationRef?: React.RefObject<HTMLDivElement>;
 }
 
-const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
-  const { ref, inView } = useInView();
+const Station: React.FC<IProps> = ({
+  name,
+  song,
+  isActive,
+  play,
+  activeStationRef,
+}) => {
+  const { ref: coverRef, inView: coverInView } = useInView();
   const stationActiveBackground = useColorModeValue("gray.50", "gray.900");
   const coverFilter = useColorModeValue(undefined, darkModeCoverFilter);
   const [coverSrc, setCoverSrc] = useState("");
@@ -39,10 +46,10 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
   //trigger animation for the first time that cover is in view and every time
   //cover source changes
   useEffect(() => {
-    if (inView && song.cover !== coverSrc) {
+    if (coverInView && song.cover !== coverSrc) {
       setCoverSrc(song.cover);
     }
-  }, [inView, song.cover, coverSrc]);
+  }, [coverInView, song.cover, coverSrc]);
 
   return (
     <Flex
@@ -55,6 +62,7 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
       outlineColor={isActive ? "red.400" : "blue.600"}
       bg={isActive ? stationActiveBackground : ""}
       transition="background 0.5s"
+      ref={activeStationRef}
     >
       <Heading isTruncated color="blue.600" maxW="95%" title={name} mb={1}>
         {name}
@@ -62,7 +70,7 @@ const Station: React.FC<IProps> = ({ name, song, isActive, play }) => {
       <AnimatePresence exitBeforeEnter>
         <CoverContainer
           key={coverSrc}
-          ref={ref}
+          ref={coverRef}
           w="full"
           h="300px"
           pos="relative"

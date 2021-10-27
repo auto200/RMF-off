@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { PLAYER_STATE } from "../utils/enums";
 import { throwNotImplemented } from "../utils/functions";
 import { Station } from "../utils/interfaces";
@@ -10,18 +16,21 @@ const PlayerContext = createContext<{
   setPlayerState: (state: PLAYER_STATE) => void;
   changeStation: (stationId: number) => void;
   togglePlayerState: () => void;
+  activeStationElementRef: React.RefObject<HTMLDivElement>;
 }>({
   currentStation: null,
   playerState: PLAYER_STATE.PAUSED,
   setPlayerState: () => throwNotImplemented,
   changeStation: () => throwNotImplemented,
   togglePlayerState: () => throwNotImplemented,
+  activeStationElementRef: (() => throwNotImplemented) as any,
 });
 
 const PlayerContextProvider: React.FC = ({ children }) => {
   const { allStations } = useStore();
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATE.PAUSED);
+  const activeStationElementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!currentStation) return;
@@ -56,6 +65,7 @@ const PlayerContextProvider: React.FC = ({ children }) => {
     setPlayerState,
     changeStation,
     togglePlayerState,
+    activeStationElementRef,
   };
 
   return (

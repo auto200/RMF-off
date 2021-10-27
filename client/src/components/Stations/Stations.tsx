@@ -7,8 +7,13 @@ import Station from "./Station";
 
 const Stations: React.FC = () => {
   const { filtredStations } = useStore();
-  const { currentStation, playerState, changeStation, togglePlayerState } =
-    usePlayer();
+  const {
+    currentStation,
+    playerState,
+    changeStation,
+    togglePlayerState,
+    activeStationElementRef,
+  } = usePlayer();
 
   return (
     <Flex justifyContent="center">
@@ -41,6 +46,7 @@ const Stations: React.FC = () => {
               streamURL={streamURL}
               isActive={isActive}
               play={playStation}
+              activeStationRef={isActive ? activeStationElementRef : undefined}
             />
           );
         })}
