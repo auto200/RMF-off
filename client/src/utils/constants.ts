@@ -1,2 +1,4 @@
-export const headerHeight = 50;
-export const playerHeight = 60;
+export const HERADER_HEIGHT = 50;
+export const PLAYER_HEIGHT = 60;
+export const IS_DEV = process.env.NODE_ENV === "development";
+export const SOCKET_URL = process.env.REACT_APP_SOCKET_URL;
