@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { PLAYER_STATE } from "../utils/enums";
+import { throwNotImplemented } from "../utils/functions";
 import { Station } from "../utils/interfaces";
-
-const throwNotImplemented = () => {
-  throw new Error("Function not implemented");
-};
+import { useStore } from "./StoreContext";
 
 const PlayerContext = createContext<{
   currentStation: Station | null;
@@ -20,26 +18,24 @@ const PlayerContext = createContext<{
   togglePlayerState: () => throwNotImplemented,
 });
 
-const PlayerContextProvider: React.FC<{ stations: Station[] }> = ({
-  children,
-  stations,
-}) => {
+const PlayerContextProvider: React.FC = ({ children }) => {
+  const { allStations } = useStore();
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATE.PAUSED);
 
   useEffect(() => {
     if (!currentStation) return;
-    const newStationData = stations.find((s) => s.id === currentStation.id);
+    const newStationData = allStations.find((s) => s.id === currentStation.id);
     if (newStationData) {
       setCurrentStation(newStationData);
     }
-  }, [currentStation, stations]);
+  }, [currentStation, allStations]);
 
   const changeStation = (stationId: number) => {
     if (stationId === currentStation?.id) {
       return;
     }
-    const newStation = stations.find(({ id }) => id === stationId);
+    const newStation = allStations.find(({ id }) => id === stationId);
     if (newStation) {
       setCurrentStation(newStation);
       setPlayerState(PLAYER_STATE.LOADING);

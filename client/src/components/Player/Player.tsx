@@ -2,7 +2,7 @@ import { Fade, Flex, Image } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { usePlayer } from "../../contexts/PlayerContext";
-import { playerHeight } from "../../utils/constants";
+import { PLAYER_HEIGHT } from "../../utils/constants";
 import { PLAYER_STATE } from "../../utils/enums";
 import useDebounce from "../../utils/hooks/useDebounce";
 import PlayerStateIcon from "../PlayerStateIcon";
@@ -52,7 +52,7 @@ const Player = () => {
         pos="fixed"
         left="50%"
         transform="translateX(-50%)"
-        h={playerHeight + "px"}
+        h={PLAYER_HEIGHT + "px"}
         w="full"
         maxW={["full", "xl"]}
         bottom="0"
@@ -63,7 +63,7 @@ const Player = () => {
         <PlayingIndication isPlaying={playerState === PLAYER_STATE.PLAYING} />
         <Image
           src={currentStation?.song.cover}
-          boxSize={playerHeight + "px"}
+          boxSize={PLAYER_HEIGHT + "px"}
           fit="cover"
         />
         <SongNameAndArtist
