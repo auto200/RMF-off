@@ -1,10 +1,10 @@
 import { chakra, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
+import PlayerStateIcon from "components/PlayerStateIcon";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { useInView } from "react-intersection-observer";
-import { Station as IStation } from "../../../utils/interfaces";
-import PlayerStateIcon from "../../PlayerStateIcon";
+import { Station as IStation } from "utils/interfaces";
 import { ArtistAndTitle, Menu } from "./components";
 
 const CoverContainer = chakra(motion.div);

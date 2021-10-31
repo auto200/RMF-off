@@ -1,11 +1,11 @@
 import { Fade, Flex, Image } from "@chakra-ui/react";
+import PlayerStateIcon from "components/PlayerStateIcon";
+import { usePlayer } from "contexts/PlayerContext";
 import React, { useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { usePlayer } from "../../contexts/PlayerContext";
-import { PLAYER_HEIGHT } from "../../utils/constants";
-import { PLAYER_STATE } from "../../utils/enums";
-import useDebounce from "../../utils/hooks/useDebounce";
-import PlayerStateIcon from "../PlayerStateIcon";
+import { PLAYER_HEIGHT } from "utils/constants";
+import { PLAYER_STATE } from "utils/enums";
+import useDebounce from "utils/hooks/useDebounce";
 import { AudioIcon, VolumeSlider } from "./components";
 import PlayingIndication from "./components/PlayingIndication";
 import SongNameAndArtist from "./components/SongNameAndArtist";

@@ -4,12 +4,6 @@ export enum SOCKET_EVENTS {
   FATAL_ERROR = "FATAL_ERROR",
 }
 
-export enum SEARCH_FILTER {
-  STATION_NAME = "STATION_NAME",
-  ARTIST = "ARTIST",
-  SONG_NAME = "SONG_NAME",
-}
-
 export enum PLAYER_STATE {
   PAUSED,
   PLAYING,

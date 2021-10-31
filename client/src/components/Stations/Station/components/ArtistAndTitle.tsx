@@ -1,6 +1,6 @@
 import { Box, Heading, Text, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
-import { Station } from "../../../../utils/interfaces";
+import { Station } from "utils/interfaces";
 
 interface ArtistAndTitleProps {
   song: Station["song"];
