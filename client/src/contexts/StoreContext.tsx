@@ -1,18 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { IS_DEV, SOCKET_URL } from "../utils/constants";
-import { SEARCH_FILTER, SOCKET_EVENTS } from "../utils/enums";
-import { throwNotImplemented } from "../utils/functions";
-import { Station } from "../utils/interfaces";
+import { IS_DEV, SOCKET_URL } from "utils/constants";
+import { SOCKET_EVENTS } from "utils/enums";
+import { throwNotImplemented } from "utils/functions";
+import { Station } from "utils/interfaces";
 
 interface Store {
   isLoading: boolean;
   fatalError: null | string;
   allStations: Station[];
-  filtredStations: Station[];
-  searchFilterType: SEARCH_FILTER;
   searchFilterValue: string;
-  setSearchFilterType: (filter: SEARCH_FILTER) => void;
   setSearchFilterValue: (value: string) => void;
 }
 
@@ -20,10 +17,7 @@ const StoreContext = createContext<Store>({
   isLoading: true,
   fatalError: null,
   allStations: [],
-  filtredStations: [],
-  searchFilterType: SEARCH_FILTER.STATION_NAME,
   searchFilterValue: "",
-  setSearchFilterType: throwNotImplemented,
   setSearchFilterValue: throwNotImplemented,
 });
 
@@ -31,10 +25,6 @@ const StoreContextProvider: React.FC = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [fatalError, setFatalError] = useState<null | string>(null);
   const [allStations, setAllStations] = useState<Station[]>([]);
-  const [filtredStations, setFiltredStations] = useState<Station[]>([]);
-  const [searchFilterType, setSearchFilterType] = useState<SEARCH_FILTER>(
-    SEARCH_FILTER.STATION_NAME
-  );
   const [searchFilterValue, setSearchFilterValue] = useState("");
 
   useEffect(() => {
@@ -69,21 +59,6 @@ const StoreContextProvider: React.FC = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    setFiltredStations(
-      allStations.filter((station) => {
-        const values = {
-          [SEARCH_FILTER.ARTIST]: station.song.artist,
-          [SEARCH_FILTER.SONG_NAME]: station.song.name,
-          [SEARCH_FILTER.STATION_NAME]: station.name,
-        };
-        return values[searchFilterType]
-          ?.toLowerCase()
-          .includes(searchFilterValue.toLocaleLowerCase());
-      })
-    );
-  }, [allStations, searchFilterValue, searchFilterType]);
-
-  useEffect(() => {
     if (allStations.length === 0) {
       setIsLoading(true);
     }
@@ -110,10 +85,7 @@ const StoreContextProvider: React.FC = ({ children }) => {
     isLoading,
     fatalError,
     allStations,
-    filtredStations,
-    searchFilterType,
     searchFilterValue,
-    setSearchFilterType,
     setSearchFilterValue,
   };
 

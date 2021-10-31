@@ -3,22 +3,22 @@ import {
   HStack,
   IconButton,
   Input,
-  Select,
+  InputGroup,
+  InputRightElement,
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useStore } from "contexts/StoreContext";
 import React, { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
-import { useStore } from "../../contexts/StoreContext";
-import { HERADER_HEIGHT } from "../../utils/constants";
-import { SEARCH_FILTER } from "../../utils/enums";
-import useDebounce from "../../utils/hooks/useDebounce";
+import { ImSearch } from "react-icons/im";
+import { HERADER_HEIGHT } from "utils/constants";
+import useDebounce from "utils/hooks/useDebounce";
 
 const DEBOUNCE_DELAY = 300;
 
 const Header: React.FC = () => {
-  const { searchFilterType, setSearchFilterType, setSearchFilterValue } =
-    useStore();
+  const { setSearchFilterValue } = useStore();
   const { toggleColorMode } = useColorMode();
   const [localSearchFilterValue, setLocalSearchFilterValue] = useState("");
   const debouncedSearchFilterValue = useDebounce(
@@ -53,26 +53,17 @@ const Header: React.FC = () => {
         bg="transparent"
       />
       <HStack pr={[1, 4]}>
-        <Select
-          value={searchFilterType}
-          onChange={(e) => setSearchFilterType(e.target.value as SEARCH_FILTER)}
-          fontWeight="bold"
-          sx={{
-            "& option": {
-              fontWeight: 500,
-            },
-          }}
-        >
-          <option value={SEARCH_FILTER.STATION_NAME}>Nazwa Stacji</option>
-          <option value={SEARCH_FILTER.ARTIST}>Wykonawca</option>
-          <option value={SEARCH_FILTER.SONG_NAME}>Nazwa utworu</option>
-        </Select>
-        <Input
-          placeholder="szukaj"
-          value={localSearchFilterValue}
-          onChange={(e) => setLocalSearchFilterValue(e.target.value)}
-          fontWeight="bold"
-        />
+        <InputGroup>
+          <Input
+            placeholder="stacja, utwór, wykonawca"
+            value={localSearchFilterValue}
+            onChange={(e) => setLocalSearchFilterValue(e.target.value)}
+            fontWeight="bold"
+          />
+          <InputRightElement>
+            <ImSearch />
+          </InputRightElement>
+        </InputGroup>
       </HStack>
     </Flex>
   );

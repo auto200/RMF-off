@@ -5,9 +5,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { PLAYER_STATE } from "../utils/enums";
-import { throwNotImplemented } from "../utils/functions";
-import { Station } from "../utils/interfaces";
+import { PLAYER_STATE } from "utils/enums";
+import { throwNotImplemented } from "utils/functions";
+import { Station } from "utils/interfaces";
 import { useStore } from "./StoreContext";
 
 const PlayerContext = createContext<{
