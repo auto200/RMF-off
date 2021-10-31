@@ -13,7 +13,6 @@ import jammingFavicon from "./utils/jammingFavicon";
 
 const App = () => {
   const { isLoading, fatalError } = useStore();
-  console.log("app changed lol");
 
   if (fatalError) {
     return (
