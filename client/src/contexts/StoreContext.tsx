@@ -39,7 +39,7 @@ const StoreContextProvider: React.FC = ({ children }) => {
         const newStations = [...prevStations];
         changedStations.forEach((changedStation) => {
           const stationToUpdateIndex = prevStations.findIndex(
-            (prevStation) => prevStation.id === changedStation.id
+            (station) => station.id === changedStation.id
           );
           if (stationToUpdateIndex > -1) {
             newStations[stationToUpdateIndex] = changedStation;
@@ -61,7 +61,9 @@ const StoreContextProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (allStations.length === 0) {
       setIsLoading(true);
+      return;
     }
+
     setIsLoading(false);
   }, [allStations]);
 

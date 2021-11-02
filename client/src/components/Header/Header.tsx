@@ -40,7 +40,7 @@ const Header: React.FC = () => {
       zIndex="docked"
       justifyContent="space-between"
       alignItems="center"
-      background={useColorModeValue("gray.50", "gray.700")}
+      background={useColorModeValue("gray.300", "gray.700")}
     >
       <IconButton
         aria-label={useColorModeValue("Tryb Jasny", "Tryb Ciemny")}
@@ -59,6 +59,10 @@ const Header: React.FC = () => {
             value={localSearchFilterValue}
             onChange={(e) => setLocalSearchFilterValue(e.target.value)}
             fontWeight="bold"
+            _placeholder={{
+              color: useColorModeValue("blackAlpha.800", "whiteAlpha.800"),
+            }}
+            borderColor={useColorModeValue("blackAlpha.800", "whiteAlpha.800")}
           />
           <InputRightElement>
             <ImSearch />
