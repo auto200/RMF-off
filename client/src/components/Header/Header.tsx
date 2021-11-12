@@ -15,15 +15,15 @@ import { ImSearch } from "react-icons/im";
 import { HERADER_HEIGHT } from "utils/constants";
 import useDebounce from "utils/hooks/useDebounce";
 
-const DEBOUNCE_DELAY = 300;
+const FILTER_DEBOUNCE_DELAY = 300;
 
 const Header: React.FC = () => {
-  const { setSearchFilterValue } = useStore();
+  const { setSearchFilterValue, isLoading } = useStore();
   const { toggleColorMode } = useColorMode();
   const [localSearchFilterValue, setLocalSearchFilterValue] = useState("");
   const debouncedSearchFilterValue = useDebounce(
     localSearchFilterValue,
-    DEBOUNCE_DELAY
+    FILTER_DEBOUNCE_DELAY
   );
 
   useEffect(() => {
@@ -60,9 +60,10 @@ const Header: React.FC = () => {
             onChange={(e) => setLocalSearchFilterValue(e.target.value)}
             fontWeight="bold"
             _placeholder={{
-              color: useColorModeValue("blackAlpha.800", "whiteAlpha.800"),
+              color: useColorModeValue("blackAlpha.600", "whiteAlpha.600"),
             }}
             borderColor={useColorModeValue("blackAlpha.800", "whiteAlpha.800")}
+            disabled={isLoading}
           />
           <InputRightElement>
             <ImSearch />
