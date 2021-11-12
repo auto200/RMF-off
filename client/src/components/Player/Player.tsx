@@ -2,10 +2,9 @@ import { Fade, Flex, Image } from "@chakra-ui/react";
 import PlayerStateIcon from "components/PlayerStateIcon";
 import { usePlayer } from "contexts/PlayerContext";
 import React, { useEffect, useRef, useState } from "react";
-import { isMobile } from "react-device-detect";
+import { isDesktop } from "react-device-detect";
 import { PLAYER_HEIGHT } from "utils/constants";
 import { PLAYER_STATE } from "utils/enums";
-import useDebounce from "utils/hooks/useDebounce";
 import { AudioIcon, VolumeSlider } from "./components";
 import PlayingIndication from "./components/PlayingIndication";
 import SongNameAndArtist from "./components/SongNameAndArtist";
@@ -18,28 +17,23 @@ const Player = () => {
     togglePlayerState,
     activeStationElementRef,
   } = usePlayer();
-  const [volume, setVolume] = useState<number>(100);
+  const [volume, setVolume] = useState<number>(() => (isDesktop ? 50 : 100));
+  const [muted, setMuted] = useState(false);
 
-  const debouncedVolume = useDebounce(volume, 3000);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
-    const savedVolume = window.localStorage.getItem("volume") as number | null;
-    if (savedVolume) {
-      setVolume(savedVolume * 1);
-    }
-  }, []);
+  const scrollToActiveStation = () => {
+    activeStationElementRef.current?.scrollIntoView({
+      block: "center",
+    });
+  };
 
   useEffect(() => {
-    //it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
     if (audioRef.current) {
-      audioRef.current.volume = volume / 1000;
+      //it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
+      audioRef.current.volume = muted ? 0 : volume / 1000;
     }
-  }, [volume]);
-
-  useEffect(() => {
-    window.localStorage.setItem("volume", debouncedVolume.toString());
-  }, [debouncedVolume]);
+  }, [volume, muted]);
 
   useEffect(() => {
     if (!audioRef.current) return;
@@ -71,11 +65,7 @@ const Player = () => {
           boxSize={PLAYER_HEIGHT + "px"}
           fit="cover"
           cursor="pointer"
-          onClick={() =>
-            activeStationElementRef.current?.scrollIntoView({
-              block: "center",
-            })
-          }
+          onClick={scrollToActiveStation}
           title="Przejdź do kafelki"
         />
         <SongNameAndArtist
@@ -83,10 +73,19 @@ const Player = () => {
           artist={currentStation?.song.artist}
         />
 
-        {!isMobile && (
+        {isDesktop && (
           <Flex fontSize="3xl" ml="auto">
-            <AudioIcon volume={volume} />
-            <VolumeSlider volume={volume} onChange={(val) => setVolume(val)} />
+            <AudioIcon
+              volume={muted ? 0 : volume}
+              onClick={() => setMuted((muted) => !muted)}
+            />
+            <VolumeSlider
+              volume={muted ? 0 : volume}
+              onChange={(val) => {
+                setVolume(val);
+                setMuted(false);
+              }}
+            />
           </Flex>
         )}
 
@@ -95,18 +94,13 @@ const Player = () => {
           p={1}
           fontSize="3xl"
           onClick={togglePlayerState}
-          aria-label="asdf"
         />
 
         <audio
           src={currentStation?.streamURL}
           ref={audioRef}
           onLoadStart={() => setPlayerState(PLAYER_STATE.LOADING)}
-          onCanPlay={() => {
-            if (audioRef.current) {
-              audioRef.current.play();
-            }
-          }}
+          onCanPlay={() => audioRef.current?.play()}
           onPause={() => setPlayerState(PLAYER_STATE.PAUSED)}
           onPlaying={() => setPlayerState(PLAYER_STATE.PLAYING)}
         />
