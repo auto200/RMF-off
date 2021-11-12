@@ -94,7 +94,6 @@ const Station: React.FC<IProps> = ({
             _hover={{ opacity: isActive ? 1 : 0.7 }}
             _focus={{ opacity: 0.7 }}
             transition="opacity 0.3s"
-            aria-label={`${isActive ? "Pause" : "Play"} current station`}
           />
         </CoverContainer>
       </AnimatePresence>
