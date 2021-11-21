@@ -2,7 +2,7 @@ import { Flex, SimpleGrid } from "@chakra-ui/react";
 import { usePlayer } from "contexts/PlayerContext";
 import { useStore } from "contexts/StoreContext";
 import Fuse from "fuse.js";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PLAYER_STATE } from "utils/enums";
 import { Station as IStation } from "utils/interfaces";
 import Station from "./Station";
@@ -25,9 +25,15 @@ const Stations: React.FC = () => {
   } = usePlayer();
   const { searchFilterValue, allStations } = useStore();
 
-  const filtredstations = searchFilterValue
-    ? getFiltredStations(allStations, searchFilterValue)
-    : allStations;
+  const [filtredStations, setFiltredStations] = useState(allStations);
+
+  useEffect(() => {
+    const filtredStations = searchFilterValue
+      ? getFiltredStations(allStations, searchFilterValue)
+      : allStations;
+
+    setFiltredStations(filtredStations);
+  }, [searchFilterValue, allStations]);
 
   //fuse search returns most approximate results first, so if user has
   //scrolled the page we have to focus on top results
@@ -44,7 +50,7 @@ const Stations: React.FC = () => {
         p="20px"
         w="full"
       >
-        {filtredstations.map(({ id, name, song, streamURL }) => {
+        {filtredStations.map(({ id, name, song, streamURL }) => {
           const isActive = currentStation?.id === id;
           const playStation = () => {
             if (isActive) {
