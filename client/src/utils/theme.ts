@@ -1,12 +1,12 @@
 import { extendTheme } from "@chakra-ui/react";
-import { HERADER_HEIGHT, PLAYER_HEIGHT } from "./constants";
+import { HEADER_HEIGHT, PLAYER_HEIGHT } from "./constants";
 
 export default extendTheme({
-  config: { initialColorMode: "dark" },
+  config: { initialColorMode: "dark", disableTransitionOnChange: false },
   styles: {
     global: {
       "#root": {
-        marginTop: `${HERADER_HEIGHT + "px"}`,
+        marginTop: `${HEADER_HEIGHT + "px"}`,
         marginBottom: `${PLAYER_HEIGHT + "px"}`,
       },
     },

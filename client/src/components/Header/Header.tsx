@@ -12,7 +12,7 @@ import { useStore } from "contexts/StoreContext";
 import React, { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { ImSearch } from "react-icons/im";
-import { HERADER_HEIGHT } from "utils/constants";
+import { HEADER_HEIGHT } from "utils/constants";
 import useDebounce from "utils/hooks/useDebounce";
 
 const FILTER_DEBOUNCE_DELAY = 300;
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
       top={0}
       left={0}
       width="100%"
-      height={HERADER_HEIGHT + "px"}
+      height={HEADER_HEIGHT + "px"}
       zIndex="docked"
       justifyContent="space-between"
       alignItems="center"

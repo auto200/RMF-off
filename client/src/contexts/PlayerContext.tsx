@@ -26,7 +26,9 @@ const PlayerContext = createContext<{
   activeStationElementRef: (() => throwNotImplemented) as any,
 });
 
-const PlayerContextProvider: React.FC = ({ children }) => {
+const PlayerContextProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { allStations } = useStore();
   const [currentStation, setCurrentStation] = useState<Station | null>(null);
   const [playerState, setPlayerState] = useState(PLAYER_STATE.PAUSED);

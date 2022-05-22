@@ -21,7 +21,9 @@ const StoreContext = createContext<Store>({
   setSearchFilterValue: throwNotImplemented,
 });
 
-const StoreContextProvider: React.FC = ({ children }) => {
+const StoreContextProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [fatalError, setFatalError] = useState<null | string>(null);
   const [allStations, setAllStations] = useState<Station[]>([]);

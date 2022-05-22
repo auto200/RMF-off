@@ -7,7 +7,7 @@ import Player from "./components/Player";
 import Stations from "./components/Stations";
 import PlayerContext from "./contexts/PlayerContext";
 import { useStore } from "./contexts/StoreContext";
-import { HERADER_HEIGHT } from "./utils/constants";
+import { HEADER_HEIGHT } from "./utils/constants";
 import { LoadingIcon } from "./utils/icons";
 import jammingFavicon from "./utils/jammingFavicon";
 
@@ -28,7 +28,7 @@ const App = () => {
       <Header />
       {isLoading ? (
         <Flex
-          h={`calc(100vh - ${HERADER_HEIGHT}px - 200px)`}
+          h={`calc(100vh - ${HEADER_HEIGHT}px - 200px)`}
           justifyContent="center"
           alignItems="center"
           fontSize="80px"

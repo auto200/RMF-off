@@ -11,14 +11,14 @@ const SongNameAndArtist: React.FC<SongNameAndArtistProps> = ({
   artist,
 }) => {
   return (
-    <Box px={2} isTruncated flex="1">
+    <Box px={2} noOfLines={0} flex="1">
       <Text
         my={1}
         m={0}
         fontWeight="bold"
         fontSize="xl"
         color="gray.200"
-        isTruncated
+        noOfLines={0}
       >
         {songName}
       </Text>
@@ -28,7 +28,7 @@ const SongNameAndArtist: React.FC<SongNameAndArtistProps> = ({
         fontWeight="bold"
         fontSize="sm"
         color="gray.500"
-        isTruncated
+        noOfLines={0}
       >
         {artist}
       </Text>

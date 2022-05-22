@@ -64,7 +64,14 @@ const Station: React.FC<IProps> = ({
       transition="background 0.5s"
       ref={activeStationRef}
     >
-      <Heading isTruncated color="blue.600" maxW="95%" title={name} mb={1}>
+      <Heading
+        noOfLines={1}
+        wordBreak="break-all"
+        color="blue.600"
+        maxW="95%"
+        title={name}
+        mb={1}
+      >
         {name}
       </Heading>
       <AnimatePresence exitBeforeEnter>

@@ -10,11 +10,11 @@ export const ArtistAndTitle: React.FC<ArtistAndTitleProps> = ({ song }) => {
   const songTitleColor = useColorModeValue("gray.700", "gray.300");
 
   return (
-    <Box flexGrow={1} isTruncated textAlign="center">
+    <Box flexGrow={1} textAlign="center">
       <Text
         fontSize="2xl"
         color={songTitleColor}
-        isTruncated
+        noOfLines={1}
         py={song.artist ? 0 : 3}
         title={song.name}
       >
@@ -24,7 +24,7 @@ export const ArtistAndTitle: React.FC<ArtistAndTitleProps> = ({ song }) => {
         as="h3"
         fontSize="md"
         color="gray.500"
-        isTruncated
+        noOfLines={1}
         title={song.artist}
       >
         {song.artist}
