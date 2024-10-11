@@ -1,7 +1,5 @@
 # RMF OFF
 
-DEMO 👉 https://RMFoff.auto200.eu/
-
 <img src="preview.gif" alt="preview" width="450px">
 
 Browse and listen to all RMFon stations in one place.
